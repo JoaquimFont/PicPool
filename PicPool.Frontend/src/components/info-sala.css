@@ -1,0 +1,189 @@
+.external-container {
+  position: relative;
+  width: 100%;
+  min-height: 178px;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  cursor: pointer;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(167, 139, 250, 0.16),
+      transparent 40%
+    ),
+    rgba(255, 255, 255, 0.045);
+
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.external-container:hover {
+  transform: translateY(-2px);
+  border-color: rgba(167, 139, 250, 0.38);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(167, 139, 250, 0.22),
+      transparent 42%
+    ),
+    rgba(255, 255, 255, 0.065);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.24);
+}
+
+.external-container.selected {
+  border-color: rgba(167, 139, 250, 0.76);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(196, 181, 253, 0.28),
+      transparent 42%
+    ),
+    rgba(124, 58, 237, 0.15);
+  box-shadow:
+    0 18px 42px rgba(124, 58, 237, 0.2),
+    inset 0 0 0 1px rgba(196, 181, 253, 0.12);
+}
+
+.external-container.small {
+  min-height: 150px;
+}
+
+.external-container.medium {
+  min-height: 178px;
+}
+
+.external-container.big {
+  min-height: 210px;
+}
+
+.internal-container {
+  height: 100%;
+  padding: 18px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.room-selected-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+  background: linear-gradient(135deg, #c4b5fd, #7c3aed);
+  color: #ffffff;
+
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.32);
+}
+
+.room-header {
+  min-height: 42px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.room-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+
+  color: #c4b5fd;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.room-name {
+  display: block;
+  max-width: 190px;
+
+  color: #f8fafc;
+  font-size: 1.02rem;
+  font-weight: 780;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.external-container.selected .room-name {
+  color: #ffffff;
+}
+
+.room-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.room-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 0.84rem;
+}
+
+.room-label {
+  color: #a1a1aa;
+  flex-shrink: 0;
+  font-weight: 650;
+}
+
+.room-value {
+  max-width: 150px;
+
+  color: #e5e7eb;
+  font-weight: 720;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.external-container.selected .room-label {
+  color: #ddd6fe;
+}
+
+.external-container.selected .room-value {
+  color: #f8fafc;
+}
+
+@media (max-width: 700px) {
+  .external-container {
+    min-height: 168px;
+  }
+
+  .room-name {
+    max-width: 230px;
+  }
+
+  .room-value {
+    max-width: 170px;
+  }
+}

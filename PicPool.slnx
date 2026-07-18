@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="PicPool.Api/PicPool.Api.csproj">
+    <BuildDependency Project="PicPool.Domain/PicPool.Domain.csproj" />
+  </Project>
+  <Project Path="PicPool.Application/PicPool.Application.csproj" />
+  <Project Path="PicPool.Domain/PicPool.Domain.csproj" />
+  <Project Path="PicPool.Infrastructure/PicPool.Infrastructure.csproj" />
+</Solution>

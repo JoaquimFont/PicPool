@@ -1,0 +1,15 @@
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool.Application.csproj.AssemblyReference.cache
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool.Application.AssemblyInfoInputs.cache
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool.Application.AssemblyInfo.cs
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool.Application.csproj.CoreCompileInputs.cache
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\bin\Debug\net8.0\PicPool.Application.deps.json
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\bin\Debug\net8.0\PicPool.Application.dll
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\bin\Debug\net8.0\PicPool.Application.pdb
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\bin\Debug\net8.0\PicPool.Domain.dll
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\bin\Debug\net8.0\PicPool.Domain.pdb
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool..CBC84213.Up2Date
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool.Application.dll
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\refint\PicPool.Application.dll
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\PicPool.Application.pdb
+C:\Users\Joaquim\Documents\PicPool\PicPool.Application\obj\Debug\net8.0\ref\PicPool.Application.dll

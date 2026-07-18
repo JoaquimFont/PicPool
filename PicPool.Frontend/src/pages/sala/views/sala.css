@@ -1,0 +1,939 @@
+.sala-view-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 48px 24px;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(139, 92, 246, 0.16),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(168, 85, 247, 0.12),
+      transparent 34%
+    ),
+    linear-gradient(135deg, #070711, #11111d 48%, #171322);
+
+  color: #f8fafc;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.sala-view-section {
+  width: 100%;
+  max-width: 1120px;
+  padding: 30px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  background: rgba(18, 18, 30, 0.78);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+}
+
+.sala-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.sala-view-eyebrow {
+  margin: 0 0 6px;
+
+  color: #c4b5fd;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sala-view-header h2 {
+  margin: 0;
+
+  color: #f8fafc;
+  font-size: 1.9rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+.sala-view-upload-button {
+  padding: 11px 18px;
+
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  color: white;
+
+  font-size: 0.93rem;
+  font-weight: 750;
+
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.26);
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.sala-view-upload-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  opacity: 0.96;
+  box-shadow: 0 16px 38px rgba(124, 58, 237, 0.34);
+}
+
+.sala-view-upload-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.sala-view-uploading {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  border-radius: 14px;
+  background: rgba(124, 58, 237, 0.1);
+
+  color: #ddd6fe;
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.sala-view-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 18px;
+  padding: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.sala-view-options {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sala-view-options label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  color: #cbd5e1;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.sala-view-options select {
+  min-width: 118px;
+  height: 38px;
+  padding: 0 34px 0 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  outline: none;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  font-size: 0.88rem;
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+.sala-view-options select:focus {
+  border-color: rgba(167, 139, 250, 0.75);
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.14);
+}
+
+.sala-view-options select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sala-view-options select option {
+  color: #111827;
+}
+
+.sala-view-direction-button {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 13px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+
+  font-size: 0.86rem;
+  font-weight: 750;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.sala-view-direction-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(167, 139, 250, 0.16);
+  border-color: rgba(167, 139, 250, 0.42);
+}
+
+.sala-view-direction-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sala-view-direction-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 0.18);
+  color: #ddd6fe;
+
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.sala-view-image-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sala-view-select-button,
+.sala-view-download-all-button,
+.sala-view-download-selected-button,
+.sala-view-delete-selected-button {
+  height: 38px;
+  padding: 0 14px;
+
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-size: 0.86rem;
+  font-weight: 750;
+  white-space: nowrap;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sala-view-select-button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+}
+
+.sala-view-select-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(167, 139, 250, 0.48);
+}
+
+.sala-view-select-button.active {
+  border-color: rgba(167, 139, 250, 0.42);
+  background: rgba(167, 139, 250, 0.2);
+  color: #ede9fe;
+}
+
+.sala-view-download-all-button {
+  border: 0;
+  background: #f8fafc;
+  color: #111827;
+}
+
+.sala-view-download-selected-button {
+  border: 0;
+  background: linear-gradient(135deg, #c4b5fd, #a78bfa);
+  color: #1e1b4b;
+}
+
+.sala-view-delete-selected-button {
+  border: 1px solid rgba(248, 113, 113, 0.32);
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca;
+}
+
+.sala-view-select-button:hover:not(:disabled),
+.sala-view-download-all-button:hover:not(:disabled),
+.sala-view-download-selected-button:hover:not(:disabled),
+.sala-view-delete-selected-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  opacity: 0.96;
+}
+
+.sala-view-select-button:disabled,
+.sala-view-download-all-button:disabled,
+.sala-view-download-selected-button:disabled,
+.sala-view-delete-selected-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sala-view-selected-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  margin: 0 0 18px;
+  padding: 10px 14px;
+
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  border-radius: 16px;
+  background: rgba(167, 139, 250, 0.08);
+
+  color: #ddd6fe;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.sala-view-file-input {
+  display: none;
+}
+
+.sala-view-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+  justify-items: center;
+}
+
+.sala-view-loading,
+.sala-view-empty {
+  margin: 0;
+  padding: 24px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+
+  color: #cbd5e1;
+  font-size: 1rem;
+  font-weight: 650;
+  text-align: center;
+}
+
+.sala-view-error {
+  width: 100%;
+  max-width: 1120px;
+  box-sizing: border-box;
+
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(248, 113, 113, 0.18);
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca;
+
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-align: left;
+}
+
+.sala-view-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  margin-top: 28px;
+}
+
+.sala-view-pagination button {
+  height: 38px;
+  padding: 0 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+
+  font-size: 0.9rem;
+  font-weight: 750;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sala-view-pagination button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(167, 139, 250, 0.16);
+  border-color: rgba(167, 139, 250, 0.42);
+}
+
+.sala-view-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sala-view-pagination span {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sala-view-back {
+  display: inline-block;
+  margin-top: 24px;
+
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  color: #a1a1aa;
+  font-size: 0.94rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.sala-view-back:hover {
+  color: #ddd6fe;
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .sala-view-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sala-view-options,
+  .sala-view-image-actions {
+    width: 100%;
+  }
+
+  .sala-view-image-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 700px) {
+  .sala-view-page {
+    padding: 32px 16px;
+  }
+
+  .sala-view-section {
+    padding: 24px 18px;
+    border-radius: 22px;
+  }
+
+  .sala-view-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sala-view-header h2 {
+    font-size: 1.55rem;
+  }
+
+  .sala-view-upload-button {
+    width: 100%;
+  }
+
+  .sala-view-options {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .sala-view-options select,
+  .sala-view-direction-button {
+    width: 100%;
+  }
+
+  .sala-view-image-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .sala-view-select-button,
+  .sala-view-download-all-button,
+  .sala-view-download-selected-button,
+  .sala-view-delete-selected-button {
+    width: 100%;
+  }
+
+  .sala-view-selected-info {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .sala-view-images-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sala-view-pagination {
+    flex-wrap: wrap;
+  }
+  .sala-view-header-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .sala-view-delete-main-button {
+    width: 100%;
+  }
+
+  .sala-view-images-panel {
+    max-height: 560px;
+  }
+}
+
+.sala-view-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sala-view-delete-main-button {
+  padding: 11px 18px;
+
+  border: 1px solid rgba(248, 113, 113, 0.32);
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: rgba(248, 113, 113, 0.1);
+  color: #fecaca;
+
+  font-size: 0.93rem;
+  font-weight: 750;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sala-view-delete-main-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(248, 113, 113, 0.16);
+  border-color: rgba(248, 113, 113, 0.48);
+}
+
+.sala-view-delete-main-button.active {
+  background: linear-gradient(135deg, #fb7185, #ef4444);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.22);
+}
+
+.sala-view-delete-main-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.sala-view-images-panel {
+  max-height: 620px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 4px 8px 4px 4px;
+  margin-top: 8px;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167, 139, 250, 0.45) rgba(255, 255, 255, 0.06);
+}
+
+.sala-view-images-panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sala-view-images-panel::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sala-view-images-panel::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 0.45);
+}
+
+.sala-view-images-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.62);
+}
+
+.sala-view-share-button {
+  padding: 11px 18px;
+
+  border: 1px solid rgba(167, 139, 250, 0.34);
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: rgba(167, 139, 250, 0.14);
+  color: #ede9fe;
+
+  font-size: 0.93rem;
+  font-weight: 750;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sala-view-share-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(167, 139, 250, 0.22);
+  border-color: rgba(167, 139, 250, 0.52);
+}
+
+.sala-view-share-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sala-share-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+  background: rgba(3, 3, 12, 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.sala-share-modal {
+  width: 100%;
+  max-width: 980px;
+  max-height: 88vh;
+  overflow-y: auto;
+
+  padding: 28px;
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 26px;
+  background: rgba(18, 18, 30, 0.96);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+
+  color: #f8fafc;
+}
+
+.sala-share-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-bottom: 22px;
+}
+
+.sala-share-header h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.65rem;
+  font-weight: 780;
+  letter-spacing: -0.04em;
+}
+
+.sala-share-close {
+  width: 38px;
+  height: 38px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+
+  font-size: 1rem;
+  font-weight: 800;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.sala-share-close:hover {
+  transform: translateY(-1px);
+  background: rgba(248, 113, 113, 0.16);
+}
+
+.sala-share-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(320px, 1.15fr);
+  gap: 18px;
+}
+
+.sala-share-form,
+.sala-share-links {
+  padding: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.sala-share-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sala-share-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.sala-share-form input,
+.sala-share-form select,
+.sala-share-link-card input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  outline: none;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.sala-share-form select option {
+  color: #111827;
+}
+
+.sala-share-form input:focus,
+.sala-share-form select:focus,
+.sala-share-link-card input:focus {
+  border-color: rgba(167, 139, 250, 0.75);
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.14);
+}
+
+.sala-share-permissions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+  margin: 4px 0 2px;
+}
+
+.sala-share-permissions label {
+  flex-direction: row;
+  align-items: center;
+
+  padding: 10px 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.045);
+
+  cursor: pointer;
+}
+
+.sala-share-permissions input {
+  width: auto;
+  accent-color: #a78bfa;
+}
+
+.sala-share-links h3 {
+  margin: 0 0 14px;
+  color: #f8fafc;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.sala-share-link-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+  padding: 14px;
+  margin-bottom: 12px;
+
+  border: 1px solid rgba(167, 139, 250, 0.16);
+  border-radius: 18px;
+  background: rgba(167, 139, 250, 0.08);
+}
+
+.sala-share-link-card.disabled {
+  opacity: 0.58;
+}
+
+.sala-share-link-card h4 {
+  margin: 0 0 4px;
+  color: #f8fafc;
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.sala-share-link-card p {
+  margin: 0;
+  color: #c4b5fd;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.sala-share-success {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 14px;
+  background: rgba(74, 222, 128, 0.1);
+  color: #bbf7d0;
+
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.sala-link-open-section {
+  max-width: 720px;
+}
+
+.sala-link-open-card {
+  padding: 22px;
+
+  border: 1px solid rgba(167, 139, 250, 0.16);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.sala-link-open-label {
+  margin: 0 0 8px;
+
+  color: #c4b5fd;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sala-link-open-card h3 {
+  margin: 0 0 10px;
+  color: #f8fafc;
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.sala-link-open-card p {
+  margin: 0 0 16px;
+  color: #cbd5e1;
+  line-height: 1.55;
+}
+
+.sala-link-permissions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sala-link-permissions-list span {
+  padding: 8px 11px;
+
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  border-radius: 999px;
+  background: rgba(167, 139, 250, 0.12);
+  color: #ede9fe;
+
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.sala-link-open-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+@media (max-width: 800px) {
+  .sala-share-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sala-link-open-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sala-view-share-button {
+    width: 100%;
+  }
+}
+
+.sala-view-operation-message {
+  width: 100%;
+  max-width: 1120px;
+  box-sizing: border-box;
+
+  margin: 0 0 18px;
+  padding: 12px 14px;
+
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  border-radius: 14px;
+  background: rgba(124, 58, 237, 0.12);
+  color: #ddd6fe;
+
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-align: left;
+}

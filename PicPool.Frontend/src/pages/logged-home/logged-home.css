@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+.logged-home-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  background:
+    radial-gradient(circle at top left, rgba(134, 239, 172, 0.45), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(45, 212, 191, 0.35), transparent 35%),
+    linear-gradient(135deg, #052e16, #064e3b);
+
+  color: white;
+  font-family: system-ui, sans-serif;
+}
+
+.logged-home-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 56px 36px 42px;
+  text-align: center;
+
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.logged-home-header {
+  margin-bottom: 52px;
+}
+
+.logged-home-header h1 {
+  margin: 0;
+  font-family: "Audiowide", system-ui, sans-serif;
+  font-size: clamp(3.2rem, 9vw, 5.6rem);
+  font-weight: 400;
+  line-height: 1;
+
+  background: linear-gradient(135deg, #bbf7d0, #5eead4, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0 0 32px rgba(134, 239, 172, 0.35);
+}
+
+.logged-home-header p {
+  max-width: 340px;
+  margin: 18px auto 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.logged-home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.logged-action {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 20px;
+
+  border-radius: 14px;
+  text-decoration: none;
+  cursor: pointer;
+
+  font-size: 1rem;
+  font-weight: 800;
+
+  transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+}
+
+.logged-action:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.primary-action {
+  background: linear-gradient(135deg, #4ade80, #14b8a6);
+  color: #022c22;
+}
+
+.secondary-action {
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+}
+
+.ghost-action {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.ghost-action:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 500px) {
+  .logged-home-card {
+    padding: 46px 24px 34px;
+  }
+}

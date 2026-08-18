@@ -11,10 +11,13 @@ export default function LoggedHomePage() {
   const location = useLocation();
 
   const state = location.state as LocationState | null;
-  const usuariPK = state?.usuariPK;
+  const searchParams = new URLSearchParams(location.search);
+  const demoUserPK = searchParams.get("demoUserPK");
+  const usuariPK = demoUserPK ?? state?.usuariPK;
+  const demoQuery = demoUserPK ? `?demoUserPK=${encodeURIComponent(demoUserPK)}` : "";
 
   function handleCrearSalaClick() {
-    navigate("/crear-sala", {
+    navigate(`/crear-sala${demoQuery}`, {
       state: {
         usuariPK,
       },
@@ -22,7 +25,7 @@ export default function LoggedHomePage() {
   }
 
   function handleEntrarSalaClick() {
-    navigate("/selector-salas", {
+    navigate(`/selector-salas${demoQuery}`, {
       state: {
         usuariPK,
       },

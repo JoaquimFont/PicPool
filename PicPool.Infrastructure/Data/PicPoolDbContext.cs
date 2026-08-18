@@ -5,6 +5,11 @@ namespace PicPool.Infrastructure.Data;
 
 public class PicPoolDbContext : DbContext
 {
+    /// <summary>
+    /// Explicació: inicialitza el context d'Entity Framework Core de PicPool.
+    /// Precondicions: les opcions del context han d'incloure la configuració de base de dades necessària.
+    /// Postcondicions: el context queda preparat per consultar i persistir les entitats del domini.
+    /// </summary>
     public PicPoolDbContext(DbContextOptions<PicPoolDbContext> options)
         : base(options)
     {
@@ -19,6 +24,11 @@ public class PicPoolDbContext : DbContext
     public DbSet<SalaImatge> SalaImatges { get; set; }
 
     public DbSet<SalaLinkCompartit> SalaLinksCompartits { get; set; }
+    /// <summary>
+    /// Explicació: configura el model relacional, claus, longituds, índexs i relacions entre entitats.
+    /// Precondicions: Entity Framework ha de proporcionar un <see cref="ModelBuilder"/> vàlid durant la construcció del model.
+    /// Postcondicions: el model queda configurat amb les restriccions i relacions que utilitzarà la base de dades.
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

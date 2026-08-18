@@ -16,6 +16,11 @@ namespace PicPool.Infrastructure.Services
         private readonly PicPoolDbContext _context;
         private readonly CloudflareR2Service _cloudflareR2Service;
         private readonly ServeiNotificacions _serveiNotificacions;
+        /// <summary>
+        /// Explicació: inicialitza el servei de sales amb accés a dades, emmagatzematge R2 i notificacions.
+        /// Precondicions: el context, el servei R2 i el servei de notificacions han d'estar registrats a la injecció de dependències.
+        /// Postcondicions: el servei queda preparat per gestionar links, imatges, permisos i estadístiques de sales.
+        /// </summary>
         public ServeiSala(
             PicPoolDbContext context,
             CloudflareR2Service cloudflareR2Service, 
@@ -26,6 +31,11 @@ namespace PicPool.Infrastructure.Services
             _serveiNotificacions = serveiNotificacions;
         }
 
+        /// <summary>
+        /// Explicació: crea un link compartit per a una sala amb un conjunt de permisos i metadades.
+        /// Precondicions: la sala ha d'existir i estar activa; l'usuari creador ha de formar part de la sala i poder gestionar-la.
+        /// Postcondicions: el link compartit queda persistit i es retorna l'entitat creada.
+        /// </summary>
         public async Task<SalaLinkCompartit> CrearLinkCompartitSalaAsync(
             string salaPK,
             string usuariCreadorPK,
@@ -81,6 +91,11 @@ namespace PicPool.Infrastructure.Services
             return link;
         }
 
+        /// <summary>
+        /// Explicació: accepta un link compartit i afegeix l'usuari a la sala o amplia els permisos existents sense reduir-los.
+        /// Precondicions: el token ha de correspondre a un link existent, actiu i vàlid; l'usuari ha d'estar identificat.
+        /// Postcondicions: l'usuari queda vinculat a la sala o amb permisos actualitzats, i es retorna l'identificador de la sala.
+        /// </summary>
         public async Task<string> AcceptarLinkCompartitSalaAsync(string token, string usuariActualPK)
         {
             var link = await _context.SalaLinksCompartits
@@ -134,6 +149,11 @@ namespace PicPool.Infrastructure.Services
             return link.SalaPK;
         }
 
+        /// <summary>
+        /// Explicació: desactiva un link compartit perquè ja no es pugui utilitzar.
+        /// Precondicions: el link ha d'existir i l'usuari ha de tenir permisos de gestió sobre la sala del link.
+        /// Postcondicions: el camp d'activació del link queda marcat com a fals i es desa a la base de dades.
+        /// </summary>
         public async Task<bool> DesactivarLinkCompartitSalaAsync(string salaLinkCompartitPK, string usuariPK)
         {
             var link = await _context.SalaLinksCompartits
@@ -161,6 +181,11 @@ namespace PicPool.Infrastructure.Services
             return true;
         }
 
+        /// <summary>
+        /// Explicació: genera un token nou per a un link compartit i el reactiva.
+        /// Precondicions: el link ha d'existir i l'usuari ha de tenir permisos de gestió sobre la sala del link.
+        /// Postcondicions: el link queda actiu, amb token nou i comptador d'usos reiniciat.
+        /// </summary>
         public async Task<SalaLinkCompartit> RegenerarTokenLinkCompartitSalaAsync(string salaLinkCompartitPK, string usuariPK)
         {
             var link = await _context.SalaLinksCompartits
@@ -190,6 +215,11 @@ namespace PicPool.Infrastructure.Services
             return link;
         }
 
+        /// <summary>
+        /// Explicació: comprova si un usuari està vinculat a una sala.
+        /// Precondicions: els identificadors de sala i usuari han d'estar informats.
+        /// Postcondicions: retorna cert si existeix la relació sala-usuari; altrament retorna fals.
+        /// </summary>
         public async Task<bool> UsuariFormaPartSalaAsync(string salaPK, string usuariPK)
         {
             return await _context.SalaUsuaris.AnyAsync(su =>
@@ -197,6 +227,11 @@ namespace PicPool.Infrastructure.Services
                 su.UsuariPK == usuariPK);
         }
 
+        /// <summary>
+        /// Explicació: obté els links compartits d'una sala per ordre de creació descendent.
+        /// Precondicions: l'usuari ha de formar part de la sala i tenir permisos per gestionar-la.
+        /// Postcondicions: retorna els links de la sala o propaga una excepció si l'usuari no té permisos.
+        /// </summary>
         public async Task<SalaLinkCompartit[]> ObtenirLinksCompartitsSalaAsync( string salaPK, string usuariPK)
         {
             var usuariSala = await _context.SalaUsuaris
@@ -215,6 +250,11 @@ namespace PicPool.Infrastructure.Services
                 .ToArrayAsync();
         }
 
+        /// <summary>
+        /// Explicació: recupera la informació d'un link compartit a partir del token.
+        /// Precondicions: el token ha d'existir i el link ha de superar les validacions d'estat, expiració i usos.
+        /// Postcondicions: retorna el link amb la sala carregada o propaga una excepció funcional si no és vàlid.
+        /// </summary>
         public async Task<SalaLinkCompartit> ObtenirInfoLinkCompartitAsync(string token)
         {
             var link = await _context.SalaLinksCompartits
@@ -230,12 +270,22 @@ namespace PicPool.Infrastructure.Services
 
             return link;
         }
+        /// <summary>
+        /// Explicació: compta quantes imatges hi ha associades a una sala.
+        /// Precondicions: l'identificador de sala ha d'estar informat.
+        /// Postcondicions: retorna el nombre de relacions sala-imatge existents per a la sala.
+        /// </summary>
         public async Task<int> ComptarImatgesSalaAsync(string salaPK)
         {
             return await _context.SalaImatges
                 .CountAsync(si => si.SalaPK == salaPK);
         }
 
+        /// <summary>
+        /// Explicació: obté els identificadors de les imatges associades a una sala.
+        /// Precondicions: l'identificador de sala ha d'estar informat.
+        /// Postcondicions: retorna la llista d'identificadors d'imatge existents dins de la sala.
+        /// </summary>
         public async Task<string[]> ObtenirImatgePksExistentsSalaAsync(string salaPK)
         {
             return await _context.SalaImatges
@@ -243,6 +293,11 @@ namespace PicPool.Infrastructure.Services
                 .Select(si => si.ImatgePK)
                 .ToArrayAsync();
         }
+        /// <summary>
+        /// Explicació: puja una imatge a R2, crea la seva entitat i l'associa a una sala.
+        /// Precondicions: la sala ha d'existir i estar activa; el propietari ha de correspondre a un usuari existent; l'stream i metadades han de ser vàlids.
+        /// Postcondicions: la imatge queda persistida, associada a la sala, amb estadístiques de sala actualitzades i notificació enviada si correspon.
+        /// </summary>
         public async Task<Imatge> PujarImatge(string salaPK, Stream stream, string fileName, string contentType, long midaBytes, decimal resolucio, string? descripcio, string? propietari)
         {
             var sala = await _context.Sales
@@ -314,6 +369,11 @@ namespace PicPool.Infrastructure.Services
             return imatge;
         }
 
+        /// <summary>
+        /// Explicació: obté les imatges d'una sala aplicant ordenació i paginació.
+        /// Precondicions: els identificadors de sala i usuari han d'estar informats; els paràmetres de consulta han de ser coherents.
+        /// Postcondicions: retorna les imatges de la pàgina sol·licitada amb l'usuari carregat.
+        /// </summary>
         public async Task<Imatge[]> ObtenirImatgesSala(string salaPK, string usuariPK, int pagina = 1, int quantitat = 20, string ordre = "data", bool descendent = false) 
         {
             var consultaImatgesSala = _context.SalaImatges
@@ -347,6 +407,11 @@ namespace PicPool.Infrastructure.Services
                                 .ToArrayAsync();
             
         }
+        /// <summary>
+        /// Explicació: obté les imatges que s'han de descarregar d'una sala.
+        /// Precondicions: la sala ha d'estar informada; si no es descarreguen totes, la llista d'imatges ha de contenir identificadors.
+        /// Postcondicions: retorna totes les imatges de la sala o només les seleccionades segons el paràmetre indicat.
+        /// </summary>
         public async Task<Imatge[]> ObtenirImatgesDescarregarSala(string salaPK, string[] imatgePks, bool totes = false)
         {
             var consultaImatgesSala = _context.SalaImatges
@@ -365,6 +430,11 @@ namespace PicPool.Infrastructure.Services
             }
         }
 
+        /// <summary>
+        /// Explicació: elimina imatges d'una sala, esborra els fitxers remots quan és possible i recalcula estadístiques.
+        /// Precondicions: la sala i l'usuari han d'existir; la llista d'imatges ha de contenir identificadors associats a la sala.
+        /// Postcondicions: les imatges trobades queden eliminades de la base de dades, s'intenta eliminar el fitxer remot i es retornen les estadístiques actualitzades.
+        /// </summary>
         public async Task<bool> EliminarImatgesSala(string salaPk, string usuariPK, string[] imatgePks)
         {
             var sala = await _context.Sales
@@ -437,6 +507,11 @@ namespace PicPool.Infrastructure.Services
             return true;
         }
 
+        /// <summary>
+        /// Explicació: crea un ZIP temporal amb els fitxers remots corresponents a una llista d'imatges.
+        /// Precondicions: les imatges han de contenir rutes d'emmagatzematge vàlides quan es vulguin incloure al ZIP.
+        /// Postcondicions: retorna la ruta del fitxer ZIP temporal creat.
+        /// </summary>
         public async Task<string> CrearZipTemporalImatgesSalaAsync(Imatge[] imatges, CancellationToken cancellationToken = default)
         {
             var carpetaTemporal = Path.Combine(
@@ -499,6 +574,11 @@ namespace PicPool.Infrastructure.Services
 
 
         //MetodesPrivats
+        /// <summary>
+        /// Explicació: envia una notificació al creador de la sala quan un altre usuari puja una imatge.
+        /// Precondicions: la sala ha de tenir usuari creador i email disponibles; la imatge i l'usuari pujador han d'estar informats.
+        /// Postcondicions: s'intenta enviar el correu; si falla, la fallada queda absorbida per no interrompre el flux principal.
+        /// </summary>
         private async Task EnviarCorreuImatgePujadaAsync(Sala sala, Usuari usuariPujador,Imatge imatge)
         {
             if (sala.Usuari == null || string.IsNullOrWhiteSpace(sala.Usuari.Email))
@@ -523,6 +603,11 @@ namespace PicPool.Infrastructure.Services
             }
         }
 
+        /// <summary>
+        /// Explicació: envia una notificació al creador de la sala quan un altre usuari elimina imatges.
+        /// Precondicions: la sala ha de tenir usuari creador i email disponibles; l'usuari eliminador i els noms d'imatges han d'estar disponibles.
+        /// Postcondicions: s'intenta enviar el correu; si falla, la fallada queda absorbida per no interrompre el flux principal.
+        /// </summary>
         private async Task EnviarCorreuImatgesEliminadesAsync( Sala sala, Usuari usuariEliminador, string[] nomsImatges)
         {
             if (sala.Usuari == null || string.IsNullOrWhiteSpace(sala.Usuari.Email))
@@ -551,6 +636,11 @@ namespace PicPool.Infrastructure.Services
             }
         }
 
+        /// <summary>
+        /// Explicació: valida que un link compartit es pugui utilitzar.
+        /// Precondicions: el link ha d'estar carregat amb la sala associada quan calgui validar-ne l'estat.
+        /// Postcondicions: si el link no és vàlid, es propaga una excepció; si és vàlid, el flux pot continuar.
+        /// </summary>
         private void ValidarLinkCompartit(SalaLinkCompartit link)
         {
             if (!link.Actiu)
@@ -566,6 +656,11 @@ namespace PicPool.Infrastructure.Services
                 throw new Exception("La sala no està activa.");
         }
 
+        /// <summary>
+        /// Explicació: aplica els permisos d'un link a una relació sala-usuari sense retirar permisos ja existents.
+        /// Precondicions: la relació sala-usuari i el link compartit han d'estar carregats.
+        /// Postcondicions: els permisos de la relació queden ampliats només quan el link concedeix permisos addicionals.
+        /// </summary>
         private void AplicarPermisosSenseReduir(SalaUsuari salaUsuari, SalaLinkCompartit link)
         {
             salaUsuari.PotVeure = salaUsuari.PotVeure || link.PotVeure;
@@ -578,6 +673,11 @@ namespace PicPool.Infrastructure.Services
             salaUsuari.Rol = ObtenirRolMesAlt(salaUsuari.Rol, link.Rol);
         }
 
+        /// <summary>
+        /// Explicació: compara dos rols i retorna el de més prioritat segons una escala interna.
+        /// Precondicions: els noms de rol han de correspondre, preferentment, a valors reconeguts per l'escala.
+        /// Postcondicions: retorna el rol nou si té més pes; en cas contrari manté el rol actual.
+        /// </summary>
         private string ObtenirRolMesAlt(string rolActual, string rolNou)
         {
             var pesos = new Dictionary<string, int>
@@ -595,6 +695,11 @@ namespace PicPool.Infrastructure.Services
         }
 
 
+        /// <summary>
+        /// Explicació: recalcula el nombre total d'imatges i el pes total d'una sala.
+        /// Precondicions: l'identificador de sala ha d'estar informat; si la sala no existeix, no s'apliquen canvis.
+        /// Postcondicions: si la sala existeix, les estadístiques queden sincronitzades amb les imatges associades.
+        /// </summary>
         private async Task RecalcularEstadistiquesSalaAsync(string salaPK)
         {
             var sala = await _context.Sales

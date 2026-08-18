@@ -14,10 +14,20 @@ namespace PicPool.Infrastructure.Services
 
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Explicació: inicialitza el servei de notificacions amb la configuració de l'aplicació.
+        /// Precondicions: la configuració ha d'estar disponible mitjançant injecció de dependències.
+        /// Postcondicions: el servei pot llegir la configuració SMTP quan hagi d'enviar correus.
+        /// </summary>
         public ServeiNotificacions(IConfiguration configuration)
         {
             _configuration = configuration;
         }
+        /// <summary>
+        /// Explicació: envia un correu electrònic de text pla utilitzant la configuració SMTP.
+        /// Precondicions: la configuració Email:* ha d'estar completa i el destinatari, assumpte i cos han d'arribar informats.
+        /// Postcondicions: el correu s'envia al destinatari o es propaga una excepció si la configuració o l'enviament fallen.
+        /// </summary>
         public async Task EnviarCorreuAsync(string correuElectronic, string assumpte, string textCorreu)
         {
             var smtpHost = _configuration["Email:SmtpHost"];

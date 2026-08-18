@@ -20,8 +20,10 @@ export default function SelectorSalas() {
     Set<string>
   >(new Set());
 
-  const usuariPk = localStorage.getItem("usuariPK");
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(window.location.search);
+  const demoUserPK = searchParams.get("demoUserPK");
+  const usuariPk = demoUserPK ?? localStorage.getItem("usuariPK");
 
   const obtenirSalesUsuari = React.useCallback(async () => {
     if (!usuariPk) {
@@ -88,14 +90,18 @@ export default function SelectorSalas() {
 
   const entrarSala = React.useCallback(
     (salaPk: string) => {
-      navigate("/sala", {
+      const demoQuery = demoUserPK
+        ? `?demoUserPK=${encodeURIComponent(demoUserPK)}&demoSalaPK=${encodeURIComponent(salaPk)}`
+        : "";
+
+      navigate(`/sala${demoQuery}`, {
         state: {
           salaPk,
           usuariPK: usuariPk,
         },
       });
     },
-    [navigate, usuariPk],
+    [demoUserPK, navigate, usuariPk],
   );
 
   const onClickSala = React.useCallback(
@@ -345,7 +351,13 @@ export default function SelectorSalas() {
       <button
         type="button"
         className="entrar-sala-back"
-        onClick={() => navigate("/logged-home")}
+        onClick={() =>
+          navigate(
+            demoUserPK
+              ? `/logged-home?demoUserPK=${encodeURIComponent(demoUserPK)}`
+              : "/logged-home",
+          )
+        }
       >
         Tornar a l'inici
       </button>

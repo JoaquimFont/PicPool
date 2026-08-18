@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 22px;
+  border-radius: var(--radius-lg);
   background: transparent;
 
   cursor: pointer;
@@ -36,9 +36,10 @@
   width: 76.92%;
   height: 76.92%;
 
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: #e5e7eb;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
 
   position: relative;
   z-index: 2;
@@ -51,7 +52,7 @@
 }
 
 .image-card-external-container:hover {
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: var(--surface-muted);
 }
 
 .image-card-external-container:hover .image-card-internal-container {
@@ -59,14 +60,14 @@
 }
 
 .image-card-external-container.selected {
-  background-color: rgba(124, 175, 243, 0.45);
+  background-color: var(--surface-strong);
 }
 
 .image-card-external-container.selected .image-card-internal-container {
   width: 74.07%;
   height: 74.07%;
   transform: scale(0.94);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.18);
 }
 
 .image-card-external-container.hidden {

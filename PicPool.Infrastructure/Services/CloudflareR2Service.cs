@@ -10,6 +10,11 @@ namespace PicPool.Infrastructure.Services
         private readonly string _bucketName;
         private readonly string _publicUrl;
 
+        /// <summary>
+        /// Explicació: inicialitza el client S3 compatible amb Cloudflare R2 a partir de la configuració.
+        /// Precondicions: la configuració CloudflareR2:* ha d'incloure credencials, URL del servei, bucket i URL pública.
+        /// Postcondicions: el servei queda preparat per pujar, copiar i eliminar objectes del bucket configurat.
+        /// </summary>
         public CloudflareR2Service(IConfiguration configuration)
         {
             var accessKey = configuration["CloudflareR2:AccessKey"];
@@ -32,6 +37,11 @@ namespace PicPool.Infrastructure.Services
             );
         }
 
+        /// <summary>
+        /// Explicació: puja un fitxer al bucket R2 i construeix la seva URL pública.
+        /// Precondicions: l'stream ha de ser llegible, l'objectKey ha d'identificar la ruta de destí i el contentType ha d'estar informat.
+        /// Postcondicions: l'objecte queda pujat al bucket i es retorna la URL pública esperada.
+        /// </summary>
         public async Task<string> PujarFitxerAsync(
             Stream stream,
             string objectKey,
@@ -50,6 +60,11 @@ namespace PicPool.Infrastructure.Services
             return $"{_publicUrl}/{objectKey}";
         }
 
+        /// <summary>
+        /// Explicació: llegeix un objecte de R2 i el copia a un stream de destinació.
+        /// Precondicions: l'objectKey ha d'existir al bucket i el stream de destinació ha de permetre escriptura.
+        /// Postcondicions: el contingut de l'objecte queda copiat al stream proporcionat.
+        /// </summary>
         public async Task CopiarFitxerAStreamAsync(string objectKey, Stream destinationStream, CancellationToken cancellationToken = default)
         {
             var request = new GetObjectRequest
@@ -69,6 +84,11 @@ namespace PicPool.Infrastructure.Services
             );
         }
 
+        /// <summary>
+        /// Explicació: elimina un objecte del bucket R2 si la clau està informada.
+        /// Precondicions: l'objectKey ha d'identificar l'objecte a eliminar; si és buit, el mètode no fa cap operació.
+        /// Postcondicions: l'objecte queda eliminat del bucket quan la clau és vàlida i l'operació remota finalitza correctament.
+        /// </summary>
         public async Task EliminarFitxerAsync(string objectKey, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(objectKey))

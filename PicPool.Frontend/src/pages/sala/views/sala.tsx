@@ -19,6 +19,9 @@ export default function SalaComponent() {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const demoUserPK = searchParams.get("demoUserPK");
+  const demoSalaPK = searchParams.get("demoSalaPK");
   const [missatgeSeleccio, setMissatgeSeleccio] = React.useState("");
   const [missatgeError, setMissatgeError] = React.useState("");
   const [carregant, setCarregant] = React.useState(true);
@@ -30,8 +33,9 @@ export default function SalaComponent() {
   const [ordre, setOrdre] = React.useState<"data" | "nom">("data");
   const [descendent, setDescendent] = React.useState(false);
 
-  const salaPk = location.state?.salaPk;
-  const usuariPk = location.state?.usuariPK ?? localStorage.getItem("usuariPK");
+  const salaPk = demoSalaPK ?? location.state?.salaPk;
+  const usuariPk =
+    demoUserPK ?? location.state?.usuariPK ?? localStorage.getItem("usuariPK");
 
   const [refreshKey, setRefreshKey] = React.useState(0);
   const [imatgesSeleccionades, setImatgesSeleccionades] = React.useState<
@@ -420,7 +424,13 @@ export default function SalaComponent() {
         <button
           type="button"
           className="sala-view-back"
-          onClick={() => navigate("/logged-home")}
+          onClick={() =>
+            navigate(
+              demoUserPK
+                ? `/logged-home?demoUserPK=${encodeURIComponent(demoUserPK)}`
+                : "/logged-home",
+            )
+          }
         >
           Tornar a l'inici
         </button>
@@ -613,7 +623,13 @@ export default function SalaComponent() {
       <button
         type="button"
         className="sala-view-back"
-        onClick={() => navigate("/logged-home")}
+        onClick={() =>
+          navigate(
+            demoUserPK
+              ? `/logged-home?demoUserPK=${encodeURIComponent(demoUserPK)}`
+              : "/logged-home",
+          )
+        }
       >
         Tornar a l'inici
       </button>

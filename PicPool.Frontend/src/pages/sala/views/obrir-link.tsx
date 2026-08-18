@@ -24,7 +24,9 @@ export default function ObrirLinkSala() {
   const { token } = useParams();
   const navigate = useNavigate();
 
-  const usuariPK = localStorage.getItem("usuariPK");
+  const searchParams = new URLSearchParams(window.location.search);
+  const demoUserPK = searchParams.get("demoUserPK");
+  const usuariPK = demoUserPK ?? localStorage.getItem("usuariPK");
 
   const [carregant, setCarregant] = React.useState(true);
   const [acceptant, setAcceptant] = React.useState(false);
@@ -88,7 +90,7 @@ export default function ObrirLinkSala() {
     return () => {
       componentActiu = false;
     };
-  }, [token, usuariPK, navigate]);
+  }, [demoUserPK, token, usuariPK, navigate]);
 
   const acceptar = React.useCallback(async () => {
     if (!token || !usuariPK) return;
@@ -106,7 +108,12 @@ export default function ObrirLinkSala() {
         return;
       }
 
-      navigate("/sala", {
+      const demoQuery =
+        demoUserPK && resposta.salaPK
+          ? `?demoUserPK=${encodeURIComponent(demoUserPK)}&demoSalaPK=${encodeURIComponent(resposta.salaPK)}`
+          : "";
+
+      navigate(`/sala${demoQuery}`, {
         state: {
           salaPk: resposta.salaPK,
           usuariPK,
@@ -121,11 +128,15 @@ export default function ObrirLinkSala() {
     } finally {
       setAcceptant(false);
     }
-  }, [token, usuariPK, navigate]);
+  }, [demoUserPK, token, usuariPK, navigate]);
 
   const rebutjar = React.useCallback(() => {
-    navigate("/logged-home");
-  }, [navigate]);
+    navigate(
+      demoUserPK
+        ? `/logged-home?demoUserPK=${encodeURIComponent(demoUserPK)}`
+        : "/logged-home",
+    );
+  }, [demoUserPK, navigate]);
 
   if (!token) {
     return (

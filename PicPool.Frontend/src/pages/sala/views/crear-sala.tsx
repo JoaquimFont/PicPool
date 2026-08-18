@@ -5,7 +5,9 @@ import { useNavigate } from "react-router";
 
 export default function CrearSalaPage() {
   const [nomSala, setNomSala] = useState("");
-  const usuariPk = localStorage.getItem("usuariPK");
+  const searchParams = new URLSearchParams(window.location.search);
+  const demoUserPK = searchParams.get("demoUserPK");
+  const usuariPk = demoUserPK ?? localStorage.getItem("usuariPK");
   const [missatgeError, setMissatgeError] = useState("");
   const [carregant, setCarregant] = useState(false);
    const navigate = useNavigate();
@@ -28,9 +30,16 @@ export default function CrearSalaPage() {
 
     console.log("Sala creada correctament", resposta);
     
-    navigate("/sala", {
+    const salaPk = resposta.sala?.salaPK;
+    const demoQuery =
+      demoUserPK && salaPk
+        ? `?demoUserPK=${encodeURIComponent(demoUserPK)}&demoSalaPK=${encodeURIComponent(salaPk)}`
+        : "";
+
+    navigate(`/sala${demoQuery}`, {
       state: {
-        salaPk: resposta.sala?.salaPK,
+        salaPk,
+        usuariPK: usuariPk,
       },
     });
   }
@@ -62,7 +71,14 @@ export default function CrearSalaPage() {
           </button>
         </form>
 
-        <a href="/logged-home" className="crear-sala-back">
+        <a
+          href={
+            demoUserPK
+              ? `/logged-home?demoUserPK=${encodeURIComponent(demoUserPK)}`
+              : "/logged-home"
+          }
+          className="crear-sala-back"
+        >
           Tornar a l'inici
         </a>
       </section>

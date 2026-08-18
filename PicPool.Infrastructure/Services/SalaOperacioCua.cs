@@ -11,6 +11,11 @@ namespace PicPool.Infrastructure.Services
     {
         private readonly ConcurrentDictionary<string, SemaphoreSlim> _semaforsSala = new();
 
+        /// <summary>
+        /// Explicació: serialitza operacions per sala perquè no s'executin simultàniament sobre la mateixa sala.
+        /// Precondicions: <paramref name="salaPk"/> ha d'identificar la sala i <paramref name="operacio"/> ha de contenir la feina a executar.
+        /// Postcondicions: l'operació retorna el seu resultat després d'obtenir el torn; el semàfor de la sala s'allibera sempre en finalitzar.
+        /// </summary>
         public async Task<TResult> ExecutarEnCuaAsync<TResult>(
             string salaPk,
             Func<Task<TResult>> operacio,

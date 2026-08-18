@@ -12,6 +12,11 @@ namespace PicPool.Infrastructure.Services
         private readonly ServeiNotificacions _serveiNotificacions;
         private readonly ILogger<ServeiMantenimentSales> _logger;
 
+        /// <summary>
+        /// Explicació: inicialitza el servei de manteniment de sales amb accés a dades, fitxers, notificacions i logging.
+        /// Precondicions: totes les dependències han d'estar registrades al contenidor d'injecció.
+        /// Postcondicions: el servei pot avisar sales properes a expirar i eliminar sales caducades.
+        /// </summary>
         public ServeiMantenimentSales(
             PicPoolDbContext context,
             CloudflareR2Service cloudflareR2Service,
@@ -24,6 +29,11 @@ namespace PicPool.Infrastructure.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Explicació: executa totes les tasques de manteniment previstes sobre les sales.
+        /// Precondicions: el context de dades ha d'estar disponible i el token de cancel·lació ha de representar l'operació actual.
+        /// Postcondicions: s'han processat avisos d'expiració i eliminacions de sales expirades segons la data actual.
+        /// </summary>
         public async Task ExecutarMantenimentAsync(
             CancellationToken cancellationToken = default)
         {
@@ -33,6 +43,11 @@ namespace PicPool.Infrastructure.Services
             await EliminarSalesExpiradesAsync(ara, cancellationToken);
         }
 
+        /// <summary>
+        /// Explicació: envia avisos als usuaris de sales que expiraran dins del marge definit.
+        /// Precondicions: la data de referència ha de ser coherent i les sales han de tenir usuaris carregables amb email.
+        /// Postcondicions: les sales avisades queden marcades amb la data d'avís per evitar notificacions duplicades.
+        /// </summary>
         private async Task AvisarSalesProperesAExpirarAsync(
             DateTime ara,
             CancellationToken cancellationToken)
@@ -66,6 +81,11 @@ namespace PicPool.Infrastructure.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Explicació: elimina sales actives que ja han superat la seva data d'expiració.
+        /// Precondicions: la data de referència ha de ser coherent i les sales expirades han de poder carregar les seves relacions.
+        /// Postcondicions: s'intenten eliminar fitxers remots i s'eliminen de la base de dades les sales i entitats associades.
+        /// </summary>
         private async Task EliminarSalesExpiradesAsync(
             DateTime ara,
             CancellationToken cancellationToken)
@@ -129,6 +149,11 @@ namespace PicPool.Infrastructure.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Explicació: envia un correu a tots els usuaris amb email associats a una sala.
+        /// Precondicions: la sala ha de tenir la col·lecció d'usuaris carregada i l'assumpte/cos han d'estar informats.
+        /// Postcondicions: s'intenta enviar el correu a cada destinatari únic; els errors individuals es registren i no interrompen la resta d'enviaments.
+        /// </summary>
         private async Task EnviarCorreuUsuarisSalaAsync(
             Sala sala,
             string assumpte,

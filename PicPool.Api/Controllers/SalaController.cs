@@ -18,6 +18,11 @@ namespace PicPool.Api.Controllers
         private readonly ServeiSala _serveiSala;
         private readonly SalaOperacioCua _salaOperacioCua;
         private readonly IHubContext<SalaHub> _salaHub;
+        /// <summary>
+        /// Explicació: inicialitza el controlador de sales amb el servei de domini, la cua d'operacions i el hub SignalR.
+        /// Precondicions: la injecció de dependències ha de proporcionar instàncies vàlides dels tres serveis.
+        /// Postcondicions: el controlador pot gestionar imatges, links compartits i notificacions en temps real.
+        /// </summary>
         public SalaController(ServeiSala serveiSala, SalaOperacioCua salaOperacioCua, IHubContext<SalaHub> salaHub)
         {
             _serveiSala = serveiSala;
@@ -25,6 +30,11 @@ namespace PicPool.Api.Controllers
             _salaHub = salaHub;
         }
 
+        /// <summary>
+        /// Explicació: puja una o més imatges a una sala i notifica els clients connectats quan la sala s'actualitza.
+        /// Precondicions: la petició ha d'incloure sala, usuari i com a mínim una imatge; la sala i l'usuari han de ser vàlids.
+        /// Postcondicions: les imatges queden persistides si l'operació és correcta i s'envia un esdeveniment SignalR al grup de la sala.
+        /// </summary>
         [HttpPost("pujarImatges")]
         public async Task<IActionResult> PujarImatges([FromForm] PujarImatgesRequestDto dto, CancellationToken cancellationToken)
         {
@@ -109,6 +119,11 @@ namespace PicPool.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Explicació: obté les imatges d'una sala amb paginació i ordenació, juntament amb metadades de recompte.
+        /// Precondicions: el DTO ha d'incloure identificador de sala i identificador d'usuari.
+        /// Postcondicions: retorna les imatges de la sala en format DTO i la informació auxiliar necessària per a la UI.
+        /// </summary>
         [HttpPost("obtenirImatgesSala")]
         public async Task<IActionResult> ObtenirImatgesSala([FromBody] ObtenirImatgesSalaRequestDto dto)
         {
@@ -159,6 +174,11 @@ namespace PicPool.Api.Controllers
             return Ok(resposta);
         }
 
+        /// <summary>
+        /// Explicació: elimina imatges d'una sala i notifica els clients connectats quan hi ha canvis.
+        /// Precondicions: el DTO ha d'incloure sala, usuari i com a mínim una imatge a eliminar.
+        /// Postcondicions: si l'eliminació és correcta, les imatges deixen d'estar associades a la sala i s'emet una notificació SignalR.
+        /// </summary>
         [HttpPost("eliminarImatgesSala")]
         public async Task<IActionResult> EliminarImatgesSala([FromBody] EliminarImatgesSalaRequestDto dto, CancellationToken cancellationToken)
         {
@@ -238,6 +258,11 @@ namespace PicPool.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Explicació: prepara i retorna un fitxer ZIP amb totes les imatges d'una sala o només amb una selecció.
+        /// Precondicions: el DTO ha d'incloure la sala; si no es descarreguen totes, ha d'incloure imatges seleccionades.
+        /// Postcondicions: retorna un ZIP descarregable o una resposta d'error si no hi ha imatges disponibles.
+        /// </summary>
         [HttpPost("descarregarImatgesSala")]
         public async Task<IActionResult> DescarregarImatgesSala([FromBody] DescarregarImatgesSalaRequestDto dto, CancellationToken cancellationToken)
         {
@@ -287,6 +312,11 @@ namespace PicPool.Api.Controllers
             );
         }
 
+        /// <summary>
+        /// Explicació: crea un link compartit per donar accés a una sala amb permisos concrets.
+        /// Precondicions: el DTO ha d'incloure sala, usuari creador, nom del link i permisos; l'usuari ha de poder gestionar la sala.
+        /// Postcondicions: retorna el link compartit creat o una resposta amb missatge d'error si no es pot crear.
+        /// </summary>
         [HttpPost("crearLinkCompartit")]
         public async Task<IActionResult> CrearLinkCompartit([FromBody] CrearLinkCompartitSalaRequestDto dto)
         {
@@ -346,6 +376,11 @@ namespace PicPool.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Explicació: obté els links compartits existents d'una sala.
+        /// Precondicions: el DTO ha d'incloure sala i usuari; l'usuari ha de tenir permisos per gestionar o consultar els links.
+        /// Postcondicions: retorna la llista de links compartits o una resposta buida amb missatge si no hi ha autorització.
+        /// </summary>
         [HttpPost("obtenirLinksCompartits")]
         public async Task<IActionResult> ObtenirLinksCompartits([FromBody] ObtenirLinksCompartitsSalaRequestDto dto)
         {
@@ -392,6 +427,11 @@ namespace PicPool.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Explicació: consulta la informació pública i de permisos associada a un token de link compartit.
+        /// Precondicions: el DTO ha d'incloure el token; opcionalment pot incloure usuari per saber si ja forma part de la sala.
+        /// Postcondicions: retorna la informació del link i l'estat de pertinença de l'usuari quan es pot calcular.
+        /// </summary>
         [HttpPost("obtenirInfoLinkCompartit")]
         public async Task<IActionResult> ObtenirInfoLinkCompartit([FromBody] ObtenirInfoLinkCompartitSalaRequestDto dto)
         {
@@ -442,6 +482,11 @@ namespace PicPool.Api.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Explicació: accepta un link compartit i afegeix o actualitza l'usuari dins de la sala.
+        /// Precondicions: el DTO ha d'incloure token i identificador d'usuari; el link ha de ser vàlid i actiu.
+        /// Postcondicions: retorna la sala associada al link si l'acceptació és correcta.
+        /// </summary>
         [HttpPost("acceptarLinkCompartit")]
         public async Task<IActionResult> AcceptarLinkCompartit(
             [FromBody] AcceptarLinkCompartitSalaRequestDto dto)
@@ -487,6 +532,11 @@ namespace PicPool.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Explicació: desactiva un link compartit existent.
+        /// Precondicions: el DTO ha d'incloure el link i l'usuari; l'usuari ha de tenir permisos per gestionar el link.
+        /// Postcondicions: el link queda desactivat si l'operació és correcta.
+        /// </summary>
         [HttpPost("desactivarLinkCompartit")]
         public async Task<IActionResult> DesactivarLinkCompartit([FromBody] DesactivarLinkCompartitSalaRequestDto dto)
         {
@@ -530,6 +580,11 @@ namespace PicPool.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Explicació: regenera el token d'un link compartit i reinicia el seu estat d'ús.
+        /// Precondicions: el DTO ha d'incloure el link i l'usuari; l'usuari ha de tenir permisos per gestionar el link.
+        /// Postcondicions: retorna el link actualitzat amb el token regenerat si l'operació és correcta.
+        /// </summary>
         [HttpPost("regenerarLinkCompartit")]
         public async Task<IActionResult> RegenerarLinkCompartit([FromBody] RegenerarLinkCompartitSalaRequestDto dto)
         {
@@ -573,6 +628,11 @@ namespace PicPool.Api.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Explicació: transforma una entitat de link compartit en el DTO exposat per l'API.
+        /// Precondicions: <paramref name="link"/> ha de contenir les dades persistides del link compartit.
+        /// Postcondicions: retorna un DTO amb permisos, estat, token i URL de consum des del frontend.
+        /// </summary>
         private SalaLinkCompartitDto MapSalaLinkCompartitDto(SalaLinkCompartit link)
         {
             var frontendBaseUrl = "http://localhost:5173";

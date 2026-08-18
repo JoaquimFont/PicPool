@@ -16,6 +16,11 @@ namespace PicPool.Infrastructure.Services
     {
         private readonly PicPoolDbContext _context;
         private readonly ServeiNotificacions _serveiNotificacions;
+        /// <summary>
+        /// Explicació: inicialitza el servei d'usuaris amb el context de dades i el servei de notificacions.
+        /// Precondicions: el context i el servei de notificacions han d'estar registrats a la injecció de dependències.
+        /// Postcondicions: el servei pot crear usuaris, validar credencials i gestionar sales vinculades a usuaris.
+        /// </summary>
         public ServeiUsuaris(PicPoolDbContext context, ServeiNotificacions serveiNotificacions)
         {
             _context = context;
@@ -23,6 +28,11 @@ namespace PicPool.Infrastructure.Services
 
         }
 
+        /// <summary>
+        /// Explicació: crea un usuari nou amb contrasenya hashejada.
+        /// Precondicions: el nom, email i password han de ser valors vàlids i no hauria d'existir un usuari amb el mateix nom o email.
+        /// Postcondicions: si no hi ha duplicats, l'usuari queda guardat; si ja existeix, retorna un usuari marcador sense clau.
+        /// </summary>
         public Usuari CrearUsuari(string nom, string email, string password)
         {
 
@@ -67,6 +77,11 @@ namespace PicPool.Infrastructure.Services
         }
 
 
+        /// <summary>
+        /// Explicació: valida el nom d'usuari i la contrasenya contra el hash desat.
+        /// Precondicions: el nom d'usuari i la contrasenya han d'arribar informats.
+        /// Postcondicions: retorna una resposta de login correcta amb dades bàsiques o una resposta d'error funcional.
+        /// </summary>
         public object Login(string username, string password)
         {
             var usuari = _context.Usuaris
@@ -107,6 +122,11 @@ namespace PicPool.Infrastructure.Services
             };
         }
 
+        /// <summary>
+        /// Explicació: crea una sala nova per a un usuari i l'afegeix com a creador amb tots els permisos.
+        /// Precondicions: l'usuari ha d'existir i no ha de tenir ja una sala amb el mateix nom.
+        /// Postcondicions: la sala i la relació usuari-sala queden persistides; si falla la notificació per correu, la sala igualment es manté creada.
+        /// </summary>
         public async Task<Sala> CrearSala(string UsuariPK, string NomSala)
         {
             var existeixSala = await _context.Sales
@@ -183,6 +203,11 @@ namespace PicPool.Infrastructure.Services
             return sala;
         }
 
+        /// <summary>
+        /// Explicació: obté les sales associades a un usuari amb paginació i ordenació.
+        /// Precondicions: l'identificador d'usuari ha d'estar informat; els paràmetres de pàgina i quantitat han de representar una consulta vàlida.
+        /// Postcondicions: retorna les relacions sala-usuari corresponents a la pàgina demanada.
+        /// </summary>
         public async Task<SalaUsuari[]> obtenirSalesUsuari(string usuariPK, int pagina = 1, int quantitat = 20, string ordre = "data", bool descendent = false)
         {
 
@@ -208,6 +233,11 @@ namespace PicPool.Infrastructure.Services
 
         }
 
+        /// <summary>
+        /// Explicació: elimina sales i les seves relacions amb usuaris a partir d'una llista d'identificadors.
+        /// Precondicions: l'identificador d'usuari ha d'arribar informat i la llista de sales no hauria d'estar buida.
+        /// Postcondicions: les sales trobades i les relacions associades queden marcades per eliminar i es desa el canvi a la base de dades.
+        /// </summary>
         public async Task<Boolean> eliminarSalas(string usuariPK, string[] salaPks)
         {
 

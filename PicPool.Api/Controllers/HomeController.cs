@@ -13,11 +13,21 @@ namespace PicPool.Api.Controllers
     {
         private readonly ServeiUsuaris _serveiUsuaris;
 
+        /// <summary>
+        /// Explicació: inicialitza el controlador d'usuaris amb el servei que concentra la lògica d'usuaris i sales personals.
+        /// Precondicions: el contenidor d'injecció de dependències ha de proporcionar una instància vàlida de <see cref="ServeiUsuaris"/>.
+        /// Postcondicions: el controlador queda preparat per delegar les operacions d'usuari al servei corresponent.
+        /// </summary>
         public UsuariController(ServeiUsuaris serveiUsuaris)
         {
             _serveiUsuaris = serveiUsuaris;
         }
 
+        /// <summary>
+        /// Explicació: crea un usuari nou a partir de les dades rebudes pel cos de la petició.
+        /// Precondicions: el DTO ha de contenir nom, email i contrasenya; el nom i l'email no haurien d'existir prèviament.
+        /// Postcondicions: retorna una resposta correcta amb l'usuari creat o una resposta d'error si no es pot crear.
+        /// </summary>
         [HttpPost]
         public IActionResult CrearUsuari([FromBody] CrearUsuariDto dto)
         {
@@ -41,6 +51,11 @@ namespace PicPool.Api.Controllers
             });
         }
 
+        /// <summary>
+        /// Explicació: valida les credencials d'un usuari i retorna el resultat de l'inici de sessió.
+        /// Precondicions: el DTO ha d'incloure nom d'usuari i contrasenya.
+        /// Postcondicions: retorna la resposta del servei indicant si el login és correcte i, si escau, les dades bàsiques de l'usuari.
+        /// </summary>
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequestDto dto)
         {
@@ -50,6 +65,11 @@ namespace PicPool.Api.Controllers
         }
 
 
+        /// <summary>
+        /// Explicació: crea una sala associada a un usuari existent.
+        /// Precondicions: el DTO ha d'incloure l'identificador de l'usuari creador i el nom de la sala.
+        /// Postcondicions: retorna la sala creada o una resposta d'error si falta l'usuari o la sala ja existeix/no es pot crear.
+        /// </summary>
         [HttpPost("crearSala")]
         public async Task<IActionResult> CrearSala([FromBody] CrearSalaRequestDto dto)
         {
@@ -105,6 +125,11 @@ namespace PicPool.Api.Controllers
             });
         }
 
+        /// <summary>
+        /// Explicació: obté les sales vinculades a un usuari aplicant paginació i ordenació.
+        /// Precondicions: el DTO ha d'incloure l'identificador d'usuari i els paràmetres de consulta esperats.
+        /// Postcondicions: retorna una llista de sales transformada a DTOs de resposta.
+        /// </summary>
         [HttpPost("obtenirSalesUsuari")]
         public async Task<IActionResult> ObtenirSalesUsuari([FromBody] ObtenirSalesUsuariRequestDto dto)
         {
@@ -136,6 +161,11 @@ namespace PicPool.Api.Controllers
             
         }
 
+        /// <summary>
+        /// Explicació: elimina una o més sales indicades per un usuari.
+        /// Precondicions: el DTO ha d'incloure l'identificador de l'usuari i com a mínim una sala a eliminar.
+        /// Postcondicions: retorna el resultat de l'eliminació o una resposta d'error si falten dades obligatòries.
+        /// </summary>
         [HttpPost("eliminarSalesUsuari")]
         public async Task<IActionResult> EliminarSalesUsuari([FromBody] EliminarSalesUsuariRequestDto dto)
         {

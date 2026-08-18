@@ -7,27 +7,17 @@
   padding: 48px 24px;
 
   background:
-    radial-gradient(
-      circle at top left,
-      rgba(139, 92, 246, 0.16),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(168, 85, 247, 0.12),
-      transparent 34%
-    ),
-    linear-gradient(135deg, #070711, #11111d 48%, #171322);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(247, 247, 248, 0.94)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(17, 17, 17, 0.025) 0,
+      rgba(17, 17, 17, 0.025) 1px,
+      transparent 1px,
+      transparent 72px
+    );
 
-  color: #f8fafc;
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  color: var(--text);
+  font-family: var(--sans);
 }
 
 .sala-view-section {
@@ -35,11 +25,11 @@
   max-width: 1120px;
   padding: 30px;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 26px;
-  background: rgba(18, 18, 30, 0.78);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(20px);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+  box-shadow: var(--shadow);
 }
 
 .sala-view-header {
@@ -53,7 +43,7 @@
 .sala-view-eyebrow {
   margin: 0 0 6px;
 
-  color: #c4b5fd;
+  color: #6b7280;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -63,26 +53,26 @@
 .sala-view-header h2 {
   margin: 0;
 
-  color: #f8fafc;
+  color: var(--text-h);
   font-size: 1.9rem;
   font-weight: 750;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .sala-view-upload-button {
   padding: 11px 18px;
 
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-md);
   cursor: pointer;
 
-  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  background: var(--text-h);
   color: white;
 
   font-size: 0.93rem;
   font-weight: 750;
 
-  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.26);
+  box-shadow: none;
 
   transition:
     transform 0.2s ease,
@@ -93,7 +83,7 @@
 .sala-view-upload-button:hover:not(:disabled) {
   transform: translateY(-1px);
   opacity: 0.96;
-  box-shadow: 0 16px 38px rgba(124, 58, 237, 0.34);
+  box-shadow: none;
 }
 
 .sala-view-upload-button:disabled {
@@ -106,11 +96,11 @@
   margin: 0 0 18px;
   padding: 12px 14px;
 
-  border: 1px solid rgba(167, 139, 250, 0.18);
-  border-radius: 14px;
-  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid var(--accent-bg);
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
 
-  color: #ddd6fe;
+  color: var(--text-h);
   font-size: 0.92rem;
   font-weight: 650;
 }
@@ -124,9 +114,9 @@
   margin-bottom: 18px;
   padding: 14px;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
 }
 
 .sala-view-options {
@@ -141,7 +131,7 @@
   flex-direction: column;
   gap: 6px;
 
-  color: #cbd5e1;
+  color: var(--text);
   font-size: 0.76rem;
   font-weight: 700;
 }
@@ -151,12 +141,12 @@
   height: 38px;
   padding: 0 34px 0 12px;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   outline: none;
 
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
+  background: var(--surface);
+  color: var(--text-h);
   font-size: 0.88rem;
   font-weight: 650;
 
@@ -164,8 +154,8 @@
 }
 
 .sala-view-options select:focus {
-  border-color: rgba(167, 139, 250, 0.75);
-  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.14);
+  border-color: var(--text-h);
+  box-shadow: 0 0 0 4px var(--accent-bg);
 }
 
 .sala-view-options select:disabled {
@@ -184,12 +174,12 @@
   gap: 8px;
   padding: 0 13px;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   cursor: pointer;
 
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
+  background: var(--surface);
+  color: var(--text-h);
 
   font-size: 0.86rem;
   font-weight: 750;
@@ -203,8 +193,8 @@
 
 .sala-view-direction-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: rgba(167, 139, 250, 0.16);
-  border-color: rgba(167, 139, 250, 0.42);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
 }
 
 .sala-view-direction-button:disabled {
@@ -219,9 +209,9 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 999px;
-  background: rgba(167, 139, 250, 0.18);
-  color: #ddd6fe;
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
+  color: var(--text-h);
 
   font-size: 0.95rem;
   line-height: 1;
@@ -242,7 +232,7 @@
   height: 38px;
   padding: 0 14px;
 
-  border-radius: 999px;
+  border-radius: var(--radius-md);
   cursor: pointer;
 
   font-size: 0.86rem;
@@ -258,39 +248,39 @@
 }
 
 .sala-view-select-button {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-h);
 }
 
 .sala-view-select-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(167, 139, 250, 0.48);
+  background: var(--surface-muted);
+  border-color: var(--accent-border);
 }
 
 .sala-view-select-button.active {
-  border-color: rgba(167, 139, 250, 0.42);
-  background: rgba(167, 139, 250, 0.2);
-  color: #ede9fe;
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--text-h);
 }
 
 .sala-view-download-all-button {
   border: 0;
-  background: #f8fafc;
+  background: var(--text-h);
   color: #111827;
 }
 
 .sala-view-download-selected-button {
   border: 0;
-  background: linear-gradient(135deg, #c4b5fd, #a78bfa);
+  background: var(--text-h);
   color: #1e1b4b;
 }
 
 .sala-view-delete-selected-button {
-  border: 1px solid rgba(248, 113, 113, 0.32);
-  background: rgba(248, 113, 113, 0.12);
-  color: #fecaca;
+  border: 1px solid var(--border-strong);
+  background: var(--danger-bg);
+  color: var(--text-h);
 }
 
 .sala-view-select-button:hover:not(:disabled),
@@ -317,11 +307,11 @@
   margin: 0 0 18px;
   padding: 10px 14px;
 
-  border: 1px solid rgba(167, 139, 250, 0.18);
-  border-radius: 16px;
-  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid var(--accent-bg);
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
 
-  color: #ddd6fe;
+  color: var(--text-h);
   font-size: 0.88rem;
   font-weight: 650;
 }
@@ -343,11 +333,11 @@
   margin: 0;
   padding: 24px;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
 
-  color: #cbd5e1;
+  color: var(--text);
   font-size: 1rem;
   font-weight: 650;
   text-align: center;
@@ -360,11 +350,11 @@
 
   margin: 0 0 18px;
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
 
-  border: 1px solid rgba(248, 113, 113, 0.18);
-  background: rgba(248, 113, 113, 0.12);
-  color: #fecaca;
+  border: 1px solid var(--border-strong);
+  background: var(--danger-bg);
+  color: var(--text-h);
 
   font-size: 0.92rem;
   font-weight: 650;
@@ -384,12 +374,12 @@
   height: 38px;
   padding: 0 16px;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   cursor: pointer;
 
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
+  background: var(--surface);
+  color: var(--text-h);
 
   font-size: 0.9rem;
   font-weight: 750;
@@ -403,8 +393,8 @@
 
 .sala-view-pagination button:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: rgba(167, 139, 250, 0.16);
-  border-color: rgba(167, 139, 250, 0.42);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
 }
 
 .sala-view-pagination button:disabled {
@@ -413,7 +403,7 @@
 }
 
 .sala-view-pagination span {
-  color: #cbd5e1;
+  color: var(--text);
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -426,7 +416,7 @@
   background: transparent;
   cursor: pointer;
 
-  color: #a1a1aa;
+  color: #6b7280;
   font-size: 0.94rem;
   font-weight: 700;
   text-decoration: none;
@@ -437,7 +427,7 @@
 }
 
 .sala-view-back:hover {
-  color: #ddd6fe;
+  color: var(--text-h);
   text-decoration: underline;
 }
 
@@ -464,7 +454,7 @@
 
   .sala-view-section {
     padding: 24px 18px;
-    border-radius: 22px;
+    border-radius: var(--radius-lg);
   }
 
   .sala-view-header {
@@ -538,12 +528,12 @@
 .sala-view-delete-main-button {
   padding: 11px 18px;
 
-  border: 1px solid rgba(248, 113, 113, 0.32);
-  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
   cursor: pointer;
 
-  background: rgba(248, 113, 113, 0.1);
-  color: #fecaca;
+  background: var(--danger-bg);
+  color: var(--text-h);
 
   font-size: 0.93rem;
   font-weight: 750;
@@ -557,15 +547,15 @@
 
 .sala-view-delete-main-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: rgba(248, 113, 113, 0.16);
-  border-color: rgba(248, 113, 113, 0.48);
+  background: rgba(31, 41, 51, 0.12);
+  border-color: var(--text-h);
 }
 
 .sala-view-delete-main-button.active {
-  background: linear-gradient(135deg, #fb7185, #ef4444);
+  background: var(--text-h);
   color: white;
   border-color: transparent;
-  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.22);
+  box-shadow: none;
 }
 
 .sala-view-delete-main-button:disabled {
@@ -583,7 +573,7 @@
   margin-top: 8px;
 
   scrollbar-width: thin;
-  scrollbar-color: rgba(167, 139, 250, 0.45) rgba(255, 255, 255, 0.06);
+  scrollbar-color: #9ca3af var(--surface-muted);
 }
 
 .sala-view-images-panel::-webkit-scrollbar {
@@ -591,28 +581,28 @@
 }
 
 .sala-view-images-panel::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
 }
 
 .sala-view-images-panel::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgba(167, 139, 250, 0.45);
+  border-radius: var(--radius-md);
+  background: #9ca3af;
 }
 
 .sala-view-images-panel::-webkit-scrollbar-thumb:hover {
-  background: rgba(167, 139, 250, 0.62);
+  background: #6b7280;
 }
 
 .sala-view-share-button {
   padding: 11px 18px;
 
-  border: 1px solid rgba(167, 139, 250, 0.34);
-  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
   cursor: pointer;
 
-  background: rgba(167, 139, 250, 0.14);
-  color: #ede9fe;
+  background: var(--accent-bg);
+  color: var(--text-h);
 
   font-size: 0.93rem;
   font-weight: 750;
@@ -626,8 +616,8 @@
 
 .sala-view-share-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: rgba(167, 139, 250, 0.22);
-  border-color: rgba(167, 139, 250, 0.52);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
 }
 
 .sala-view-share-button:disabled {
@@ -645,8 +635,8 @@
   justify-content: center;
 
   padding: 24px;
-  background: rgba(3, 3, 12, 0.72);
-  backdrop-filter: blur(14px);
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(8px);
 }
 
 .sala-share-modal {
@@ -658,11 +648,11 @@
   padding: 28px;
 
   border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 26px;
-  background: rgba(18, 18, 30, 0.96);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow);
 
-  color: #f8fafc;
+  color: var(--text-h);
 }
 
 .sala-share-header {
@@ -676,22 +666,22 @@
 
 .sala-share-header h2 {
   margin: 0;
-  color: #f8fafc;
+  color: var(--text-h);
   font-size: 1.65rem;
   font-weight: 780;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .sala-share-close {
   width: 38px;
   height: 38px;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   cursor: pointer;
 
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
+  background: var(--surface);
+  color: var(--text-h);
 
   font-size: 1rem;
   font-weight: 800;
@@ -703,7 +693,7 @@
 
 .sala-share-close:hover {
   transform: translateY(-1px);
-  background: rgba(248, 113, 113, 0.16);
+  background: rgba(31, 41, 51, 0.12);
 }
 
 .sala-share-grid {
@@ -716,9 +706,9 @@
 .sala-share-links {
   padding: 16px;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
 }
 
 .sala-share-form {
@@ -732,7 +722,7 @@
   flex-direction: column;
   gap: 7px;
 
-  color: #cbd5e1;
+  color: var(--text);
   font-size: 0.82rem;
   font-weight: 750;
 }
@@ -745,12 +735,12 @@
 
   padding: 11px 13px;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   outline: none;
 
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
+  background: var(--surface);
+  color: var(--text-h);
 
   font-size: 0.9rem;
   font-weight: 650;
@@ -763,8 +753,8 @@
 .sala-share-form input:focus,
 .sala-share-form select:focus,
 .sala-share-link-card input:focus {
-  border-color: rgba(167, 139, 250, 0.75);
-  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.14);
+  border-color: var(--text-h);
+  box-shadow: 0 0 0 4px var(--accent-bg);
 }
 
 .sala-share-permissions {
@@ -781,21 +771,21 @@
 
   padding: 10px 12px;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
 
   cursor: pointer;
 }
 
 .sala-share-permissions input {
   width: auto;
-  accent-color: #a78bfa;
+  accent-color: var(--text-h);
 }
 
 .sala-share-links h3 {
   margin: 0 0 14px;
-  color: #f8fafc;
+  color: var(--text-h);
   font-size: 1rem;
   font-weight: 800;
 }
@@ -808,9 +798,9 @@
   padding: 14px;
   margin-bottom: 12px;
 
-  border: 1px solid rgba(167, 139, 250, 0.16);
-  border-radius: 18px;
-  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid var(--accent-bg);
+  border-radius: var(--radius-lg);
+  background: var(--accent-bg);
 }
 
 .sala-share-link-card.disabled {
@@ -819,14 +809,14 @@
 
 .sala-share-link-card h4 {
   margin: 0 0 4px;
-  color: #f8fafc;
+  color: var(--text-h);
   font-size: 0.96rem;
   font-weight: 800;
 }
 
 .sala-share-link-card p {
   margin: 0;
-  color: #c4b5fd;
+  color: #6b7280;
   font-size: 0.82rem;
   font-weight: 650;
 }
@@ -835,10 +825,10 @@
   margin: 0 0 16px;
   padding: 12px 14px;
 
-  border: 1px solid rgba(74, 222, 128, 0.2);
-  border-radius: 14px;
-  background: rgba(74, 222, 128, 0.1);
-  color: #bbf7d0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
+  color: var(--text-h);
 
   font-size: 0.92rem;
   font-weight: 650;
@@ -851,15 +841,15 @@
 .sala-link-open-card {
   padding: 22px;
 
-  border: 1px solid rgba(167, 139, 250, 0.16);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--accent-bg);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
 }
 
 .sala-link-open-label {
   margin: 0 0 8px;
 
-  color: #c4b5fd;
+  color: #6b7280;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -868,14 +858,14 @@
 
 .sala-link-open-card h3 {
   margin: 0 0 10px;
-  color: #f8fafc;
+  color: var(--text-h);
   font-size: 1.55rem;
   font-weight: 800;
 }
 
 .sala-link-open-card p {
   margin: 0 0 16px;
-  color: #cbd5e1;
+  color: var(--text);
   line-height: 1.55;
 }
 
@@ -888,10 +878,10 @@
 .sala-link-permissions-list span {
   padding: 8px 11px;
 
-  border: 1px solid rgba(167, 139, 250, 0.22);
-  border-radius: 999px;
-  background: rgba(167, 139, 250, 0.12);
-  color: #ede9fe;
+  border: 1px solid var(--accent-bg);
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
+  color: var(--text-h);
 
   font-size: 0.82rem;
   font-weight: 750;
@@ -928,10 +918,10 @@
   margin: 0 0 18px;
   padding: 12px 14px;
 
-  border: 1px solid rgba(167, 139, 250, 0.22);
-  border-radius: 14px;
-  background: rgba(124, 58, 237, 0.12);
-  color: #ddd6fe;
+  border: 1px solid var(--accent-bg);
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
+  color: var(--text-h);
 
   font-size: 0.92rem;
   font-weight: 650;

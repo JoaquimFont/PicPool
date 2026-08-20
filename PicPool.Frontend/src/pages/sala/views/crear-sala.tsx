@@ -2,6 +2,22 @@ import React, { useState } from "react";
 import "./crear-sala.css";
 import { crearSalaHandler } from "../../../controllers/HomePageController";
 import { useNavigate } from "react-router";
+import type { resumPlaUsuariDto } from "../../../api/DTOs/UserDtos";
+
+function llegirResumPlaUsuari(): resumPlaUsuariDto | null {
+  const plaGuardat = localStorage.getItem("usuariPla");
+
+  if (!plaGuardat) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(plaGuardat) as resumPlaUsuariDto;
+  } catch {
+    localStorage.removeItem("usuariPla");
+    return null;
+  }
+}
 
 export default function CrearSalaPage() {
   const [nomSala, setNomSala] = useState("");
@@ -10,12 +26,28 @@ export default function CrearSalaPage() {
   const usuariPk = demoUserPK ?? localStorage.getItem("usuariPK");
   const [missatgeError, setMissatgeError] = useState("");
   const [carregant, setCarregant] = useState(false);
-   const navigate = useNavigate();
+  const [plaUsuari, setPlaUsuari] = useState<resumPlaUsuariDto | null>(() =>
+    demoUserPK ? null : llegirResumPlaUsuari(),
+  );
+  const navigate = useNavigate();
+  const plaBloquejaCrearSala = plaUsuari?.potCrearSala === false;
 
   async function crearSala(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setMissatgeError("");
+
+    if (plaBloquejaCrearSala && plaUsuari) {
+      setMissatgeError(
+        `Has arribat al límit de ${plaUsuari.limitSales} sala(es) del teu pla.`,
+      );
+      return;
+    }
+
+    if (!usuariPk) {
+      setMissatgeError("No s'ha trobat l'usuari actual.");
+      return;
+    }
 
     if (!nomSala.trim()) {
       setMissatgeError("Introdueix el nom de la sala.");
@@ -31,6 +63,16 @@ export default function CrearSalaPage() {
     console.log("Sala creada correctament", resposta);
     
     const salaPk = resposta.sala?.salaPK;
+
+    if (!resposta.correcte || !salaPk) {
+      setMissatgeError(resposta.missatge || "No s'ha pogut crear la sala.");
+      return;
+    }
+
+    if (resposta.pla) {
+      setPlaUsuari(resposta.pla);
+    }
+
     const demoQuery =
       demoUserPK && salaPk
         ? `?demoUserPK=${encodeURIComponent(demoUserPK)}&demoSalaPK=${encodeURIComponent(salaPk)}`
@@ -64,9 +106,15 @@ export default function CrearSalaPage() {
             />
           </label>
 
+          {plaUsuari && (
+            <p className="crear-sala-plan-status">
+              Sales creades: {plaUsuari.salesCreades}/{plaUsuari.limitSales}
+            </p>
+          )}
+
           {missatgeError && <p className="crear-sala-error">{missatgeError}</p>}
 
-          <button type="submit" disabled={carregant}>
+          <button type="submit" disabled={carregant || plaBloquejaCrearSala}>
             {carregant ? "Creant sala..." : "Crear sala"}
           </button>
         </form>

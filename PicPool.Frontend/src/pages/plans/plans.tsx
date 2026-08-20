@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { plaDto } from "../../api/DTOs/PlaDtos";
+import type { plaDto, resumPlaUsuariDto } from "../../api/DTOs/PlaDtos";
 import {
   obtenirPlansUsuariHandler,
   seleccionarPlaUsuariHandler,
@@ -30,6 +30,15 @@ function formatPreu(preu: number) {
     currency: "EUR",
     maximumFractionDigits: 0,
   }).format(preu);
+}
+
+function desarResumPla(pla?: resumPlaUsuariDto | null) {
+  if (pla) {
+    localStorage.setItem("usuariPla", JSON.stringify(pla));
+    return;
+  }
+
+  localStorage.removeItem("usuariPla");
 }
 
 export default function PlansPage() {
@@ -84,6 +93,9 @@ export default function PlansPage() {
 
       setPlans(resposta.plans ?? []);
       setPlaActualPK(resposta.plaActualPK);
+      if (!demoUserPK) {
+        desarResumPla(resposta.plaActual);
+      }
       setCarregant(false);
     }
 
@@ -112,6 +124,9 @@ export default function PlansPage() {
     }
 
     setPlaActualPK(resposta.plaActualPK);
+    if (!demoUserPK) {
+      desarResumPla(resposta.plaActual);
+    }
     setMissatge(resposta.missatge || "Pla seleccionat correctament.");
     setPlaSeleccionantPK(null);
   }

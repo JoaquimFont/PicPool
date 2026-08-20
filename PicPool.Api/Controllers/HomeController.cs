@@ -24,14 +24,27 @@ namespace PicPool.Api.Controllers
         }
 
         /// <summary>
-        /// Explicació: crea un usuari nou a partir de les dades rebudes pel cos de la petició.
-        /// Precondicions: el DTO ha de contenir nom, email i contrasenya; el nom i l'email no haurien d'existir prèviament.
-        /// Postcondicions: retorna una resposta correcta amb l'usuari creat o una resposta d'error si no es pot crear.
+        /// Explicació: crea un usuari nou a partir de les dades rebudes pel cos de la petició i retorna el pla assignat.
+        /// Precondicions: el DTO ha de contenir nom, email i contrasenya; el nom i l'email no haurien d'existir prèviament i ha d'existir un pla gratuït actiu.
+        /// Postcondicions: retorna una resposta correcta amb l'usuari creat i el seu pla gratuït o una resposta d'error si no es pot crear.
         /// </summary>
         [HttpPost]
         public IActionResult CrearUsuari([FromBody] CrearUsuariDto dto)
         {
-            var usuari = _serveiUsuaris.CrearUsuari(dto.Nom, dto.Email, dto.Password);
+            PicPool.Domain.Entities.Usuari usuari;
+
+            try
+            {
+                usuari = _serveiUsuaris.CrearUsuari(dto.Nom, dto.Email, dto.Password);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new
+                {
+                    correcte = false,
+                    missatge = ex.Message
+                });
+            }
 
             if (string.IsNullOrEmpty(usuari?.UsuariPK))
             {
@@ -47,7 +60,8 @@ namespace PicPool.Api.Controllers
             {
                 correcte = true,
                 missatge = "Usuari creat correctament.",
-                usuari
+                usuari,
+                pla = _serveiUsuaris.ObtenirResumPlaUsuari(usuari.UsuariPK)
             });
         }
 
@@ -84,7 +98,20 @@ namespace PicPool.Api.Controllers
                 });
             }
 
-           var sala = await _serveiUsuaris.CrearSala(dto.UsuariPK, dto.NomSala);
+            PicPool.Domain.Entities.Sala sala;
+
+            try
+            {
+                sala = await _serveiUsuaris.CrearSala(dto.UsuariPK, dto.NomSala);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new
+                {
+                    correcte = false,
+                    missatge = ex.Message
+                });
+            }
 
             if (string.IsNullOrEmpty(sala.SalaPK))
             {
@@ -121,7 +148,8 @@ namespace PicPool.Api.Controllers
                     DataCreacio = sala.DataCreacio,
                     DataExpiracio = sala.DataExpiracio,
                     Activa = sala.Activa
-                }
+                },
+                pla = await _serveiUsuaris.ObtenirResumPlaUsuariAsync(dto.UsuariPK)
             });
         }
 
@@ -212,6 +240,7 @@ namespace PicPool.Api.Controllers
                 Correcte = true,
                 Missatge = "Plans obtinguts correctament.",
                 PlaActualPK = plaActual?.PlaPK,
+                PlaActual = await _serveiUsuaris.ObtenirResumPlaUsuariAsync(dto.UsuariPK),
                 Plans = plans.Select(pla => new PlaDto
                 {
                     PlaPK = pla.PlaPK,
@@ -257,7 +286,8 @@ namespace PicPool.Api.Controllers
             {
                 Correcte = true,
                 Missatge = "Pla seleccionat correctament.",
-                PlaActualPK = plaSeleccionat.PlaPK
+                PlaActualPK = plaSeleccionat.PlaPK,
+                PlaActual = await _serveiUsuaris.ObtenirResumPlaUsuariAsync(dto.UsuariPK)
             });
         }
 

@@ -26,6 +26,8 @@ namespace PicPool.Api.Usuari.DTOs
             public string Nom { get; set; }
 
             public string Email { get; set; }
+
+            public object? Pla { get; set; }
         }
     
         public class ObtenirSalesUsuariRequestDto
@@ -94,6 +96,8 @@ namespace PicPool.Api.Usuari.DTOs
             public string SalaPK { get; set; }
             public string NomSala { get; set; }
 
+            public object? Pla { get; set; }
+
         }
 
         public class CrearUsuariDto
@@ -116,6 +120,8 @@ namespace PicPool.Api.Usuari.DTOs
             public string Nom { get; set; }
 
             public string Email { get; set; }
+
+            public object? Pla { get; set; }
         }
 
         public class UsuariDto
@@ -165,6 +171,8 @@ namespace PicPool.Api.Usuari.DTOs
         public PlaDto[] Plans { get; set; }
 
         public string? PlaActualPK { get; set; }
+
+        public object? PlaActual { get; set; }
     }
 
     public class SeleccionarPlaUsuariRequestDto
@@ -181,6 +189,8 @@ namespace PicPool.Api.Usuari.DTOs
         public string Missatge { get; set; }
 
         public string? PlaActualPK { get; set; }
+
+        public object? PlaActual { get; set; }
     }
 
 

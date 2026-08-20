@@ -268,13 +268,13 @@
 .sala-view-download-all-button {
   border: 0;
   background: var(--text-h);
-  color: #111827;
+  color: #ffffff;
 }
 
 .sala-view-download-selected-button {
   border: 0;
   background: var(--text-h);
-  color: #1e1b4b;
+  color: #ffffff;
 }
 
 .sala-view-delete-selected-button {
@@ -297,6 +297,13 @@
 .sala-view-delete-selected-button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.sala-view-download-all-button:hover:not(:disabled),
+.sala-view-download-selected-button:hover:not(:disabled),
+.sala-view-download-all-button:disabled,
+.sala-view-download-selected-button:disabled {
+  color: #ffffff;
 }
 
 .sala-view-selected-info {

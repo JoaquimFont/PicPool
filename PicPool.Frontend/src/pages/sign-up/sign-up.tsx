@@ -36,6 +36,11 @@ export default function SignUpPage() {
 
     console.log("Compte creat correctament", resposta);
 
+    if (!resposta.correcte) {
+      setMissatgeError(resposta.missatge || "No s'ha pogut crear el compte.");
+      return;
+    }
+
     navigate("/login");
   }
 

@@ -17,6 +17,7 @@ export interface obtenirPlansUsuariResponseDto {
   missatge: string;
   plans: plaDto[];
   plaActualPK?: string;
+  plaActual?: resumPlaUsuariDto | null;
 }
 
 export interface seleccionarPlaUsuariRequestDto {
@@ -28,4 +29,18 @@ export interface seleccionarPlaUsuariResponseDto {
   correcte: boolean;
   missatge: string;
   plaActualPK?: string;
+  plaActual?: resumPlaUsuariDto | null;
+}
+
+export interface resumPlaUsuariDto {
+  plaPK: string;
+  nom: string;
+  limitEmmagatzematgeBytes: number;
+  limitSales: number;
+  limitImatges: number;
+  espaiConsumitBytes: number;
+  salesCreades: number;
+  imatgesPujades: number;
+  potCrearSala: boolean;
+  bytesDisponibles: number;
 }

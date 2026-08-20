@@ -253,6 +253,94 @@ namespace PicPool.Infrastructure.Services
             return true;
 
         }
+
+        /// <summary>
+        /// Explicació: obté tots els plans actius disponibles per als usuaris.
+        /// Precondicions: la taula de plans ha d'estar creada i poblada.
+        /// Postcondicions: retorna els plans actius ordenats per preu i límit de sales.
+        /// </summary>
+        public async Task<Pla[]> ObtenirPlansActius()
+        {
+            return await _context.Plans
+                .Where(pla => pla.Actiu)
+                .OrderBy(pla => pla.Preu)
+                .ThenBy(pla => pla.LimitSales)
+                .ToArrayAsync();
+        }
+
+        /// <summary>
+        /// Explicació: obté el pla actiu associat a un usuari.
+        /// Precondicions: l'identificador d'usuari ha d'arribar informat.
+        /// Postcondicions: retorna la relació activa usuari-pla o null si l'usuari encara no té pla.
+        /// </summary>
+        public async Task<UsuariPla?> ObtenirPlaActiuUsuari(string usuariPK)
+        {
+            return await _context.UsuariPlans
+                .Where(usuariPla => usuariPla.UsuariPK == usuariPK && usuariPla.Actiu)
+                .OrderByDescending(usuariPla => usuariPla.DataInici)
+                .FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Explicació: selecciona un pla per a l'usuari, tancant qualsevol pla actiu anterior.
+        /// Precondicions: l'usuari i el pla han d'existir i el pla ha d'estar actiu.
+        /// Postcondicions: l'usuari queda amb una única relació de pla activa.
+        /// </summary>
+        public async Task<UsuariPla?> SeleccionarPlaUsuari(string usuariPK, string plaPK)
+        {
+            var usuariExisteix = await _context.Usuaris
+                .AnyAsync(usuari => usuari.UsuariPK == usuariPK && usuari.Actiu);
+
+            if (!usuariExisteix)
+            {
+                return null;
+            }
+
+            var plaExisteix = await _context.Plans
+                .AnyAsync(pla => pla.PlaPK == plaPK && pla.Actiu);
+
+            if (!plaExisteix)
+            {
+                return null;
+            }
+
+            var plaActiuActual = await ObtenirPlaActiuUsuari(usuariPK);
+
+            if (plaActiuActual != null && plaActiuActual.PlaPK == plaPK)
+            {
+                return plaActiuActual;
+            }
+
+            var ara = DateTime.UtcNow;
+            var plansActius = await _context.UsuariPlans
+                .Where(usuariPla => usuariPla.UsuariPK == usuariPK && usuariPla.Actiu)
+                .ToListAsync();
+
+            foreach (var plaActiu in plansActius)
+            {
+                plaActiu.Actiu = false;
+                plaActiu.DataFi = ara;
+            }
+
+            var usuariPlaNou = new UsuariPla
+            {
+                UsuariPlaPK = Guid.NewGuid().ToString("N"),
+                UsuariPK = usuariPK,
+                PlaPK = plaPK,
+                DataInici = ara,
+                DataFi = null,
+                Actiu = true,
+                EspaiConsumitBytes = 0,
+                SalesCreades = 0,
+                ImatgesPujades = 0
+            };
+
+            _context.UsuariPlans.Add(usuariPlaNou);
+
+            await _context.SaveChangesAsync();
+
+            return usuariPlaNou;
+        }
     }
 
 }

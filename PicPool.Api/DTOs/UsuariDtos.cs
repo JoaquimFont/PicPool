@@ -134,5 +134,54 @@ namespace PicPool.Api.Usuari.DTOs
 
     }
 
+    public class PlaDto
+    {
+        public string PlaPK { get; set; }
+
+        public string Nom { get; set; }
+
+        public long LimitEmmagatzematgeBytes { get; set; }
+
+        public int LimitSales { get; set; }
+
+        public int LimitImatges { get; set; }
+
+        public decimal Preu { get; set; }
+
+        public bool Actiu { get; set; }
+    }
+
+    public class ObtenirPlansUsuariRequestDto
+    {
+        public string UsuariPK { get; set; }
+    }
+
+    public class ObtenirPlansUsuariResponseDto
+    {
+        public bool Correcte { get; set; }
+
+        public string Missatge { get; set; }
+
+        public PlaDto[] Plans { get; set; }
+
+        public string? PlaActualPK { get; set; }
+    }
+
+    public class SeleccionarPlaUsuariRequestDto
+    {
+        public string UsuariPK { get; set; }
+
+        public string PlaPK { get; set; }
+    }
+
+    public class SeleccionarPlaUsuariResponseDto
+    {
+        public bool Correcte { get; set; }
+
+        public string Missatge { get; set; }
+
+        public string? PlaActualPK { get; set; }
+    }
+
 
 }

@@ -186,6 +186,81 @@ namespace PicPool.Api.Controllers
 
         }
 
+        /// <summary>
+        /// Explicació: obté els plans actius i el pla actual de l'usuari indicat.
+        /// Precondicions: el DTO ha d'incloure l'identificador de l'usuari.
+        /// Postcondicions: retorna la llista de plans disponibles i, si existeix, el pla actiu de l'usuari.
+        /// </summary>
+        [HttpPost("obtenirPlansUsuari")]
+        public async Task<IActionResult> ObtenirPlansUsuari([FromBody] ObtenirPlansUsuariRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.UsuariPK))
+            {
+                return BadRequest(new ObtenirPlansUsuariResponseDto
+                {
+                    Correcte = false,
+                    Missatge = "L'usuari és obligatori.",
+                    Plans = []
+                });
+            }
+
+            var plans = await _serveiUsuaris.ObtenirPlansActius();
+            var plaActual = await _serveiUsuaris.ObtenirPlaActiuUsuari(dto.UsuariPK);
+
+            return Ok(new ObtenirPlansUsuariResponseDto
+            {
+                Correcte = true,
+                Missatge = "Plans obtinguts correctament.",
+                PlaActualPK = plaActual?.PlaPK,
+                Plans = plans.Select(pla => new PlaDto
+                {
+                    PlaPK = pla.PlaPK,
+                    Nom = pla.Nom,
+                    LimitEmmagatzematgeBytes = pla.LimitEmmagatzematgeBytes,
+                    LimitSales = pla.LimitSales,
+                    LimitImatges = pla.LimitImatges,
+                    Preu = pla.Preu,
+                    Actiu = pla.Actiu
+                }).ToArray()
+            });
+        }
+
+        /// <summary>
+        /// Explicació: selecciona el pla actual per a l'usuari indicat.
+        /// Precondicions: el DTO ha d'incloure identificador d'usuari i identificador de pla.
+        /// Postcondicions: l'usuari queda vinculat al pla seleccionat com a pla actiu.
+        /// </summary>
+        [HttpPost("seleccionarPlaUsuari")]
+        public async Task<IActionResult> SeleccionarPlaUsuari([FromBody] SeleccionarPlaUsuariRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.UsuariPK) || string.IsNullOrWhiteSpace(dto.PlaPK))
+            {
+                return BadRequest(new SeleccionarPlaUsuariResponseDto
+                {
+                    Correcte = false,
+                    Missatge = "L'usuari i el pla són obligatoris."
+                });
+            }
+
+            var plaSeleccionat = await _serveiUsuaris.SeleccionarPlaUsuari(dto.UsuariPK, dto.PlaPK);
+
+            if (plaSeleccionat == null)
+            {
+                return BadRequest(new SeleccionarPlaUsuariResponseDto
+                {
+                    Correcte = false,
+                    Missatge = "No s'ha pogut seleccionar el pla."
+                });
+            }
+
+            return Ok(new SeleccionarPlaUsuariResponseDto
+            {
+                Correcte = true,
+                Missatge = "Pla seleccionat correctament.",
+                PlaActualPK = plaSeleccionat.PlaPK
+            });
+        }
+
 
     }
 }

@@ -7,7 +7,7 @@ import {
   eliminarImatgesSalaHandler,
   obtenirImatgesSalaHandler,
   uploadSalaImages,
-} from "../controllers/salaController";
+} from "../../../controllers/salaController";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./sala.css";
 import CrearICompartirLink from "./crear-i-compartir-link";

@@ -293,6 +293,25 @@ namespace PicPool.Infrastructure.Services
                 .Select(si => si.ImatgePK)
                 .ToArrayAsync();
         }
+
+        /// <summary>
+        /// Explicació: valida si un lot d'imatges es pot afegir a una sala segons el pla del creador de la sala.
+        /// Precondicions: la sala ha d'existir i estar activa; les mides han de venir dels fitxers rebuts pel backend.
+        /// Postcondicions: si el lot supera el pla del creador, es propaga una excepció abans de pujar cap fitxer.
+        /// </summary>
+        public async Task ValidarPujadaImatgesSalaAsync(string salaPK, long midaTotalBytes, int totalImatges)
+        {
+            var sala = await _context.Sales
+                .FirstOrDefaultAsync(s => s.SalaPK == salaPK && s.Activa);
+
+            if (sala == null)
+            {
+                throw new InvalidOperationException("La sala no existeix o no està activa.");
+            }
+
+            await ValidarQuotaPlaCreadorSalaAsync(sala, midaTotalBytes, totalImatges);
+        }
+
         /// <summary>
         /// Explicació: puja una imatge a R2, crea la seva entitat i l'associa a una sala.
         /// Precondicions: la sala ha d'existir i estar activa; el propietari ha de correspondre a un usuari existent; l'stream i metadades han de ser vàlids.
@@ -316,6 +335,8 @@ namespace PicPool.Infrastructure.Services
             {
                 throw new InvalidOperationException("L'usuari que puja la imatge no existeix.");
             }
+
+            var quota = await ValidarQuotaPlaCreadorSalaAsync(sala, midaBytes, 1);
 
             var imatgePK = Guid.NewGuid().ToString("N");
             var imatgeSalaPK = Guid.NewGuid().ToString("N");
@@ -354,6 +375,9 @@ namespace PicPool.Infrastructure.Services
 
             sala.PesTotal += midaBytes;
             sala.TotalImatges += 1;
+            quota.UsuariPla.EspaiConsumitBytes = quota.EspaiConsumitBytesActual + midaBytes;
+            quota.UsuariPla.ImatgesPujades = quota.ImatgesPujadesActuals + 1;
+            quota.UsuariPla.SalesCreades = quota.SalesCreadesActuals;
 
             await _context.SaveChangesAsync();
 
@@ -494,6 +518,7 @@ namespace PicPool.Infrastructure.Services
             await _context.SaveChangesAsync();
 
             await RecalcularEstadistiquesSalaAsync(salaPk);
+            await SincronitzarPlaCreadorSalaAsync(sala.UsuariCreadorPK);
 
             if (sala.UsuariCreadorPK != usuariEliminador.UsuariPK)
             {
@@ -694,6 +719,116 @@ namespace PicPool.Infrastructure.Services
             return pesNou > pesActual ? rolNou : rolActual;
         }
 
+        /// <summary>
+        /// Explicació: valida espai i nombre d'imatges contra el pla actiu del creador de la sala.
+        /// Precondicions: la sala ha d'incloure l'identificador del creador i les quantitats a afegir han de ser positives o zero.
+        /// Postcondicions: retorna les dades d'ús actuals per actualitzar el comptador del pla si la pujada continua.
+        /// </summary>
+        private async Task<QuotaPlaSala> ValidarQuotaPlaCreadorSalaAsync(Sala sala, long midaAfegirBytes, int imatgesAfegir)
+        {
+            var plaActiu = await (
+                from usuariPla in _context.UsuariPlans
+                join pla in _context.Plans on usuariPla.PlaPK equals pla.PlaPK
+                where usuariPla.UsuariPK == sala.UsuariCreadorPK && usuariPla.Actiu && pla.Actiu
+                orderby usuariPla.DataInici descending
+                select new { UsuariPla = usuariPla, Pla = pla }
+            ).FirstOrDefaultAsync();
+
+            if (plaActiu == null)
+            {
+                throw new InvalidOperationException("El creador de la sala ha de tenir un pla actiu per poder pujar imatges.");
+            }
+
+            var usage = await CalcularUsageCreadorSalaAsync(sala.UsuariCreadorPK);
+            var espaiResultant = usage.EspaiConsumitBytes + midaAfegirBytes;
+            var imatgesResultants = usage.ImatgesPujades + imatgesAfegir;
+
+            if (espaiResultant > plaActiu.Pla.LimitEmmagatzematgeBytes)
+            {
+                var espaiDisponible = Math.Max(0, plaActiu.Pla.LimitEmmagatzematgeBytes - usage.EspaiConsumitBytes);
+                throw new InvalidOperationException($"La pujada supera l'espai disponible del creador de la sala. Queden {FormatBytes(espaiDisponible)}.");
+            }
+
+            if (imatgesResultants > plaActiu.Pla.LimitImatges)
+            {
+                var imatgesDisponibles = Math.Max(0, plaActiu.Pla.LimitImatges - usage.ImatgesPujades);
+                throw new InvalidOperationException($"La pujada supera el límit d'imatges del creador de la sala. Queden {imatgesDisponibles} imatge(s).");
+            }
+
+            return new QuotaPlaSala
+            {
+                UsuariPla = plaActiu.UsuariPla,
+                EspaiConsumitBytesActual = usage.EspaiConsumitBytes,
+                SalesCreadesActuals = usage.SalesCreades,
+                ImatgesPujadesActuals = usage.ImatgesPujades
+            };
+        }
+
+        /// <summary>
+        /// Explicació: calcula l'ús total imputable al creador d'una sala segons totes les seves sales actives.
+        /// Precondicions: l'identificador del creador ha d'estar informat.
+        /// Postcondicions: retorna sales actives creades, bytes consumits i imatges associades a aquestes sales.
+        /// </summary>
+        private async Task<UsagePlaSala> CalcularUsageCreadorSalaAsync(string usuariCreadorPK)
+        {
+            var consultaImatges = _context.SalaImatges
+                .Where(salaImatge =>
+                    salaImatge.Sala.UsuariCreadorPK == usuariCreadorPK &&
+                    salaImatge.Sala.Activa)
+                .Select(salaImatge => salaImatge.Imatge);
+
+            return new UsagePlaSala
+            {
+                SalesCreades = await _context.Sales
+                    .CountAsync(sala => sala.UsuariCreadorPK == usuariCreadorPK && sala.Activa),
+                EspaiConsumitBytes = await consultaImatges.SumAsync(imatge => (long?)imatge.MidaBytes) ?? 0,
+                ImatgesPujades = await consultaImatges.CountAsync()
+            };
+        }
+
+        /// <summary>
+        /// Explicació: recalcula i desa els comptadors del pla actiu del creador d'una sala.
+        /// Precondicions: l'identificador del creador ha d'estar informat; pot no existir cap pla actiu.
+        /// Postcondicions: si hi ha pla actiu, els comptadors de sales, espai i imatges queden sincronitzats.
+        /// </summary>
+        private async Task SincronitzarPlaCreadorSalaAsync(string usuariCreadorPK)
+        {
+            var usuariPla = await _context.UsuariPlans
+                .Where(up => up.UsuariPK == usuariCreadorPK && up.Actiu)
+                .OrderByDescending(up => up.DataInici)
+                .FirstOrDefaultAsync();
+
+            if (usuariPla == null)
+            {
+                return;
+            }
+
+            var usage = await CalcularUsageCreadorSalaAsync(usuariCreadorPK);
+            usuariPla.SalesCreades = usage.SalesCreades;
+            usuariPla.EspaiConsumitBytes = usage.EspaiConsumitBytes;
+            usuariPla.ImatgesPujades = usage.ImatgesPujades;
+
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Explicació: formata una quantitat de bytes en MB o GB per mostrar-la en missatges funcionals.
+        /// Precondicions: el valor de bytes ha de representar una mida no negativa.
+        /// Postcondicions: retorna una cadena llegible amb dues xifres decimals com a màxim.
+        /// </summary>
+        private static string FormatBytes(long bytes)
+        {
+            var gigabytes = bytes / 1024d / 1024d / 1024d;
+
+            if (gigabytes >= 1)
+            {
+                return $"{gigabytes:0.##} GB";
+            }
+
+            var megabytes = bytes / 1024d / 1024d;
+            return $"{megabytes:0.##} MB";
+        }
+
 
         /// <summary>
         /// Explicació: recalcula el nombre total d'imatges i el pes total d'una sala.
@@ -719,6 +854,26 @@ namespace PicPool.Infrastructure.Services
 
             await _context.SaveChangesAsync();
         }
+    }
+
+    internal class QuotaPlaSala
+    {
+        public UsuariPla UsuariPla { get; set; }
+
+        public long EspaiConsumitBytesActual { get; set; }
+
+        public int SalesCreadesActuals { get; set; }
+
+        public int ImatgesPujadesActuals { get; set; }
+    }
+
+    internal class UsagePlaSala
+    {
+        public long EspaiConsumitBytes { get; set; }
+
+        public int SalesCreades { get; set; }
+
+        public int ImatgesPujades { get; set; }
     }
 }
 

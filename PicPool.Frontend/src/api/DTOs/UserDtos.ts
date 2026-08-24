@@ -7,6 +7,7 @@ export interface LoginResponseDto {
   usuariPK?: string;
   nom?: string;
   email?: string;
+  pla?: resumPlaUsuariDto | null;
 }
 
 export interface loginUsuariDto {
@@ -25,12 +26,14 @@ export interface RegisterResponseDto {
     correcte: boolean;
     missatge: string;
     usuari?: Usuari;
+    pla?: resumPlaUsuariDto | null;
 }
 
 export interface crearSalaResponseDto {
     correcte: boolean;
     missatge: string;
     sala?: Sala;
+    pla?: resumPlaUsuariDto | null;
 }
 
 export interface crearSalaRequestDto {
@@ -62,4 +65,17 @@ export interface userDto
 export interface eliminarSalesUsuariRequestDto{
     usuariPK: string;
     salaPks: string[];
+}
+
+export interface resumPlaUsuariDto {
+    plaPK: string;
+    nom: string;
+    limitEmmagatzematgeBytes: number;
+    limitSales: number;
+    limitImatges: number;
+    espaiConsumitBytes: number;
+    salesCreades: number;
+    imatgesPujades: number;
+    potCrearSala: boolean;
+    bytesDisponibles: number;
 }

@@ -24,14 +24,27 @@ namespace PicPool.Api.Controllers
         }
 
         /// <summary>
-        /// Explicació: crea un usuari nou a partir de les dades rebudes pel cos de la petició.
-        /// Precondicions: el DTO ha de contenir nom, email i contrasenya; el nom i l'email no haurien d'existir prèviament.
-        /// Postcondicions: retorna una resposta correcta amb l'usuari creat o una resposta d'error si no es pot crear.
+        /// Explicació: crea un usuari nou a partir de les dades rebudes pel cos de la petició i retorna el pla assignat.
+        /// Precondicions: el DTO ha de contenir nom, email i contrasenya; el nom i l'email no haurien d'existir prèviament i ha d'existir un pla gratuït actiu.
+        /// Postcondicions: retorna una resposta correcta amb l'usuari creat i el seu pla gratuït o una resposta d'error si no es pot crear.
         /// </summary>
         [HttpPost]
         public IActionResult CrearUsuari([FromBody] CrearUsuariDto dto)
         {
-            var usuari = _serveiUsuaris.CrearUsuari(dto.Nom, dto.Email, dto.Password);
+            PicPool.Domain.Entities.Usuari usuari;
+
+            try
+            {
+                usuari = _serveiUsuaris.CrearUsuari(dto.Nom, dto.Email, dto.Password);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new
+                {
+                    correcte = false,
+                    missatge = ex.Message
+                });
+            }
 
             if (string.IsNullOrEmpty(usuari?.UsuariPK))
             {
@@ -47,7 +60,8 @@ namespace PicPool.Api.Controllers
             {
                 correcte = true,
                 missatge = "Usuari creat correctament.",
-                usuari
+                usuari,
+                pla = _serveiUsuaris.ObtenirResumPlaUsuari(usuari.UsuariPK)
             });
         }
 
@@ -84,7 +98,20 @@ namespace PicPool.Api.Controllers
                 });
             }
 
-           var sala = await _serveiUsuaris.CrearSala(dto.UsuariPK, dto.NomSala);
+            PicPool.Domain.Entities.Sala sala;
+
+            try
+            {
+                sala = await _serveiUsuaris.CrearSala(dto.UsuariPK, dto.NomSala);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new
+                {
+                    correcte = false,
+                    missatge = ex.Message
+                });
+            }
 
             if (string.IsNullOrEmpty(sala.SalaPK))
             {
@@ -121,7 +148,8 @@ namespace PicPool.Api.Controllers
                     DataCreacio = sala.DataCreacio,
                     DataExpiracio = sala.DataExpiracio,
                     Activa = sala.Activa
-                }
+                },
+                pla = await _serveiUsuaris.ObtenirResumPlaUsuariAsync(dto.UsuariPK)
             });
         }
 
@@ -184,6 +212,83 @@ namespace PicPool.Api.Controllers
             var eliminarSales = await _serveiUsuaris.eliminarSalas(dto.UsuariPK, dto.SalaPks);
             return Ok(eliminarSales);
 
+        }
+
+        /// <summary>
+        /// Explicació: obté els plans actius i el pla actual de l'usuari indicat.
+        /// Precondicions: el DTO ha d'incloure l'identificador de l'usuari.
+        /// Postcondicions: retorna la llista de plans disponibles i, si existeix, el pla actiu de l'usuari.
+        /// </summary>
+        [HttpPost("obtenirPlansUsuari")]
+        public async Task<IActionResult> ObtenirPlansUsuari([FromBody] ObtenirPlansUsuariRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.UsuariPK))
+            {
+                return BadRequest(new ObtenirPlansUsuariResponseDto
+                {
+                    Correcte = false,
+                    Missatge = "L'usuari és obligatori.",
+                    Plans = []
+                });
+            }
+
+            var plans = await _serveiUsuaris.ObtenirPlansActius();
+            var plaActual = await _serveiUsuaris.ObtenirPlaActiuUsuari(dto.UsuariPK);
+
+            return Ok(new ObtenirPlansUsuariResponseDto
+            {
+                Correcte = true,
+                Missatge = "Plans obtinguts correctament.",
+                PlaActualPK = plaActual?.PlaPK,
+                PlaActual = await _serveiUsuaris.ObtenirResumPlaUsuariAsync(dto.UsuariPK),
+                Plans = plans.Select(pla => new PlaDto
+                {
+                    PlaPK = pla.PlaPK,
+                    Nom = pla.Nom,
+                    LimitEmmagatzematgeBytes = pla.LimitEmmagatzematgeBytes,
+                    LimitSales = pla.LimitSales,
+                    LimitImatges = pla.LimitImatges,
+                    Preu = pla.Preu,
+                    Actiu = pla.Actiu
+                }).ToArray()
+            });
+        }
+
+        /// <summary>
+        /// Explicació: selecciona el pla actual per a l'usuari indicat.
+        /// Precondicions: el DTO ha d'incloure identificador d'usuari i identificador de pla.
+        /// Postcondicions: l'usuari queda vinculat al pla seleccionat com a pla actiu.
+        /// </summary>
+        [HttpPost("seleccionarPlaUsuari")]
+        public async Task<IActionResult> SeleccionarPlaUsuari([FromBody] SeleccionarPlaUsuariRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.UsuariPK) || string.IsNullOrWhiteSpace(dto.PlaPK))
+            {
+                return BadRequest(new SeleccionarPlaUsuariResponseDto
+                {
+                    Correcte = false,
+                    Missatge = "L'usuari i el pla són obligatoris."
+                });
+            }
+
+            var plaSeleccionat = await _serveiUsuaris.SeleccionarPlaUsuari(dto.UsuariPK, dto.PlaPK);
+
+            if (plaSeleccionat == null)
+            {
+                return BadRequest(new SeleccionarPlaUsuariResponseDto
+                {
+                    Correcte = false,
+                    Missatge = "No s'ha pogut seleccionar el pla."
+                });
+            }
+
+            return Ok(new SeleccionarPlaUsuariResponseDto
+            {
+                Correcte = true,
+                Missatge = "Pla seleccionat correctament.",
+                PlaActualPK = plaSeleccionat.PlaPK,
+                PlaActual = await _serveiUsuaris.ObtenirResumPlaUsuariAsync(dto.UsuariPK)
+            });
         }
 
 

@@ -26,6 +26,8 @@ namespace PicPool.Api.Usuari.DTOs
             public string Nom { get; set; }
 
             public string Email { get; set; }
+
+            public object? Pla { get; set; }
         }
     
         public class ObtenirSalesUsuariRequestDto
@@ -94,6 +96,8 @@ namespace PicPool.Api.Usuari.DTOs
             public string SalaPK { get; set; }
             public string NomSala { get; set; }
 
+            public object? Pla { get; set; }
+
         }
 
         public class CrearUsuariDto
@@ -116,6 +120,8 @@ namespace PicPool.Api.Usuari.DTOs
             public string Nom { get; set; }
 
             public string Email { get; set; }
+
+            public object? Pla { get; set; }
         }
 
         public class UsuariDto
@@ -132,6 +138,59 @@ namespace PicPool.Api.Usuari.DTOs
         
         public string[] SalaPks { get; set; }
 
+    }
+
+    public class PlaDto
+    {
+        public string PlaPK { get; set; }
+
+        public string Nom { get; set; }
+
+        public long LimitEmmagatzematgeBytes { get; set; }
+
+        public int LimitSales { get; set; }
+
+        public int LimitImatges { get; set; }
+
+        public decimal Preu { get; set; }
+
+        public bool Actiu { get; set; }
+    }
+
+    public class ObtenirPlansUsuariRequestDto
+    {
+        public string UsuariPK { get; set; }
+    }
+
+    public class ObtenirPlansUsuariResponseDto
+    {
+        public bool Correcte { get; set; }
+
+        public string Missatge { get; set; }
+
+        public PlaDto[] Plans { get; set; }
+
+        public string? PlaActualPK { get; set; }
+
+        public object? PlaActual { get; set; }
+    }
+
+    public class SeleccionarPlaUsuariRequestDto
+    {
+        public string UsuariPK { get; set; }
+
+        public string PlaPK { get; set; }
+    }
+
+    public class SeleccionarPlaUsuariResponseDto
+    {
+        public bool Correcte { get; set; }
+
+        public string Missatge { get; set; }
+
+        public string? PlaActualPK { get; set; }
+
+        public object? PlaActual { get; set; }
     }
 
 

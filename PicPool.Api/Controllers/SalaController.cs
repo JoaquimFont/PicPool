@@ -59,6 +59,14 @@ namespace PicPool.Api.Controllers
                     dto.SalaPk,
                     async () =>
                     {
+                        var midaTotalBytes = dto.Imatges.Sum(imatge => imatge.File.Length);
+
+                        await _serveiSala.ValidarPujadaImatgesSalaAsync(
+                            dto.SalaPk,
+                            midaTotalBytes,
+                            dto.Imatges.Length
+                        );
+
                         foreach (var imatgeDto in dto.Imatges)
                         {
                             await using var stream = imatgeDto.File.OpenReadStream();

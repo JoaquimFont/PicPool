@@ -1,6 +1,15 @@
 import * as DTOs from "../api/DTOs/UserDtos";
 import * as UserApi from "../api/usuariApi";
 
+function desarResumPlaUsuari(pla?: DTOs.resumPlaUsuariDto | null) {
+  if (pla) {
+    localStorage.setItem("usuariPla", JSON.stringify(pla));
+    return;
+  }
+
+  localStorage.removeItem("usuariPla");
+}
+
 export async function loginUsuariHandler(username: string, password: string) {
   try {
     const loginData: DTOs.loginUsuariDto = {
@@ -13,6 +22,7 @@ export async function loginUsuariHandler(username: string, password: string) {
     }
 
     localStorage.setItem("usuariPK", resposta.usuariPK || "");
+    desarResumPlaUsuari(resposta.pla);
 
     return resposta;
   } catch (error) {
@@ -39,6 +49,7 @@ export async function crearUsuariHandler(nom: string, email: string, password: s
     }
 
     localStorage.setItem("usuariPK", resposta.usuari.usuariPK);
+    desarResumPlaUsuari(resposta.pla);
 
     return resposta;
   } catch (error) {
@@ -66,6 +77,7 @@ export async function crearSalaHandler(
     }
 
     localStorage.setItem("salaPk", resposta.sala.salaPK);
+    desarResumPlaUsuari(resposta.pla);
 
     return resposta;
   } catch (error) {

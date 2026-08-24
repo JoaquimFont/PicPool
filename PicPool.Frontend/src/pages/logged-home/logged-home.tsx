@@ -32,8 +32,30 @@ export default function LoggedHomePage() {
     });
   }
 
+  function handleRevisarPlaClick() {
+    navigate(`/plans${demoQuery}`, {
+      state: {
+        usuariPK,
+      },
+    });
+  }
+
+  function handleTancarSessioClick() {
+    localStorage.removeItem("usuariPK");
+    localStorage.removeItem("salaPk");
+    navigate("/login", { replace: true });
+  }
+
   return (
     <main className="logged-home-page">
+      <button
+        className="logout-button"
+        type="button"
+        onClick={handleTancarSessioClick}
+      >
+        Tancar sessió
+      </button>
+
       <section className="logged-home-card">
         <div className="logged-home-header">
           <h1>PicPool</h1>
@@ -55,7 +77,7 @@ export default function LoggedHomePage() {
             Les meves sales
           </button>
 
-          <button className="logged-action ghost-action">
+          <button className="logged-action ghost-action" onClick={handleRevisarPlaClick}>
             Revisar pla
           </button>
         </div>

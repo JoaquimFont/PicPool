@@ -7,7 +7,7 @@ import {
   obtenirInfoLinkCompartitSala,
   obtenirLinksCompartitsSala,
   uploadImages,
-} from "../../../api/salaApi";
+} from "../api/salaApi";
 import type {
   acceptarLinkCompartitSalaResponseDTO,
   crearLinkCompartitSalaResponseDTO,
@@ -19,7 +19,7 @@ import type {
   obtenirLinksCompartitsSalaResponseDTO,
   uploadImagesRequest,
   uploadImagesResponse,
-} from "../../../api/DTOs/SalaDtos";
+} from "../api/DTOs/SalaDtos";
 
 export async function uploadSalaImages(
   salaPk: string,
